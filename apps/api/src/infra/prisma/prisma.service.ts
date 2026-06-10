@@ -20,6 +20,11 @@ export function createPrismaClient(datasourceUrl?: string) {
 
 export type TenantScopedPrismaClient = ReturnType<typeof createPrismaClient>;
 
+/** Interactive transaction client of the tenant-scoped client. */
+export type TenantTransactionClient = Parameters<
+  Parameters<TenantScopedPrismaClient['$transaction']>[0]
+>[0];
+
 @Injectable()
 export class PrismaService implements OnModuleInit, OnModuleDestroy {
   /**
