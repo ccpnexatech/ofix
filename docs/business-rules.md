@@ -46,11 +46,14 @@ uma transição: cria uma OS filha vinculada e a original permanece DELIVERED.
   ≥ 20 caracteres E um orçamento DRAFT com ≥ 1 item e total > 0. Ao executar, o
   orçamento vira SENT com `publicToken` novo e validade de 7 dias.
 - **RN-04 — Decisão do orçamento.** Aprovação/recusa acontece (a) pelo cliente
-  via link público (Fase 4) ou (b) presencialmente por um ADMIN — o evento
-  carrega `metadata.method = "in_person"`. Recusa exige motivo ≥ 5 caracteres.
-- **RN-05 — Expiração do orçamento** (Fase 4): quote SENT com token vencido é
-  tratada como EXPIRED (avaliação lazy + varredura diária); a OS permanece
-  QUOTE_SENT e uma versão N+1 pode ser criada. Link expirado → 410 Gone.
+  via link público (`/public/quotes/:token`, evento com `actorType = CUSTOMER`
+  e `method = "public_token"`, ADR-005) ou (b) presencialmente por um ADMIN
+  (`method = "in_person"`). Recusa exige motivo ≥ 5 caracteres.
+- **RN-05 — Expiração do orçamento.** Quote SENT com token vencido é tratada
+  como EXPIRED: avaliação lazy ao acessar (link público, criação de nova versão,
+  transições) + varredura no boot e diária às 03h, com evento `QUOTE_EXPIRED`
+  (actor SYSTEM). A OS permanece QUOTE_SENT e uma versão N+1 pode ser criada e
+  enviada. Link expirado na rota pública → 410 Gone com mensagem amigável.
 - **RN-06 — Entrega.** `DELIVER` grava `deliveredAt = now` e
   `warrantyUntil = deliveredAt + 90 dias`. Ex.: entregue em 10/06 → garantia
   até 08/09.
@@ -58,7 +61,8 @@ uma transição: cria uma OS filha vinculada e a original permanece DELIVERED.
   citando a data). Cria NOVA OS: `warrantyParentId` aponta para a original,
   mesma filial/cliente/equipamento, prioridade mínima HIGH (URGENT é
   preservada), status RECEIVED. Mão de obra dos mesmos serviços não é
-  recobrável — a quote da OS de garantia nasce com itens LABOR zerados (Fase 4).
+  recobrável — a quote da OS de garantia nasce com os itens LABOR da quote
+  aprovada original zerados e prefixados com "Garantia — " (referência).
 - **RN-08 — Cancelamento.** Exige motivo ≥ 10 caracteres, é terminal e proibido
   a partir de DELIVERED (que só sai via garantia).
 - **RN-09 — Auditoria transacional.** Toda transição grava `OrderEvent` na

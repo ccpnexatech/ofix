@@ -197,8 +197,84 @@ garantia → `422` com `details.code = "RN-07"` e a data limite na mensagem.
 | `POST /users` | e-mail duplicado no tenant → 409; filial inválida → 422 |
 | `PATCH /users/:id` | nome, role, branchId, isActive |
 
+## Quotes
+
+| Rota | Roles | Notas |
+|---|---|---|
+| `POST /orders/:id/quotes` | ADMIN, técnico atribuído | nova versão DRAFT; 422 com DRAFT/SENT viva; OS de garantia nasce com LABOR zerado (RN-07) |
+| `PATCH /quotes/:id` | ADMIN, técnico atribuído | itens em lote enquanto DRAFT; subtotal/total calculados no servidor (ADR-003) |
+| `POST /quotes/:id/send` | ADMIN, técnico atribuído | atalho para a transição SEND_QUOTE; só a versão mais recente |
+
+```bash
+curl -X PATCH localhost:3001/api/v1/quotes/$QUOTE \
+  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"items":[{"kind":"PART","description":"Fonte 500W","quantity":1,"unitPriceCents":25000},{"kind":"LABOR","description":"Substituição da fonte","quantity":1,"unitPriceCents":10000}]}'
+```
+
+```json
+{
+  "id": "8732e961-38d5-4ea7-89f6-aa6f9a566958",
+  "version": 1,
+  "status": "DRAFT",
+  "totalCents": 35000,
+  "items": [
+    { "kind": "PART", "description": "Fonte 500W", "quantity": 1, "unitPriceCents": 25000, "subtotalCents": 25000 },
+    { "kind": "LABOR", "description": "Substituição da fonte", "quantity": 1, "unitPriceCents": 10000, "subtotalCents": 10000 }
+  ]
+}
+```
+
+`POST /quotes/:id/send` → `201` com a OS em `QUOTE_SENT`; a quote vira SENT com
+`publicToken` novo e validade de 7 dias (RN-03).
+
+## Público (`/public/*` — sem login, 20 req/min/IP)
+
+| Rota | Respostas |
+|---|---|
+| `GET /public/quotes/:token` | 200 · 404 genérico (token desconhecido/DRAFT) · **410 expirado** (RN-05) |
+| `POST /public/quotes/:token/approve` | 200 `{ orderStatus: "APPROVED" }` · 410 · 422 já decidido |
+| `POST /public/quotes/:token/reject` `{ reason ≥ 5 }` | 200 `{ orderStatus: "REJECTED" }` · 400 sem motivo |
+
+```bash
+curl localhost:3001/api/v1/public/quotes/$PUBLIC_TOKEN
+```
+
+```json
+{
+  "company": {
+    "name": "TecNorte Assistência",
+    "branch": { "name": "Matriz Fortaleza", "city": "Fortaleza", "state": "CE", "phone": "(85) 3222-1000" }
+  },
+  "order": {
+    "code": "OS-2026-0001",
+    "equipment": "Notebook Dell Inspiron 15",
+    "reportedIssue": "Não liga após queda de energia"
+  },
+  "quote": {
+    "version": 1,
+    "status": "SENT",
+    "items": [
+      { "kind": "PART", "description": "Fonte 500W", "quantity": 1, "unitPriceCents": 25000, "subtotalCents": 25000 },
+      { "kind": "LABOR", "description": "Substituição da fonte", "quantity": 1, "unitPriceCents": 10000, "subtotalCents": 10000 }
+    ],
+    "totalCents": 35000,
+    "tokenExpiresAt": "2026-06-17T19:10:28.231Z",
+    "decidedAt": null,
+    "rejectionReason": null
+  }
+}
+```
+
+```bash
+curl -X POST localhost:3001/api/v1/public/quotes/$PUBLIC_TOKEN/approve
+# → 200 {"orderStatus":"APPROVED"}   (evento de auditoria com actorType CUSTOMER)
+```
+
+A decisão pública executa a mesma máquina de transições da API autenticada e
+grava o evento com `actorType: CUSTOMER` e `metadata.method: "public_token"`
+(ADR-005).
+
 ## A implementar nas próximas fases
 
-- **Quotes** (`POST /orders/:id/quotes`, `PATCH /quotes/:id`, `POST /quotes/:id/send`) e rotas públicas `/public/quotes/:token` — Fase 4.
 - **`GET /public/map/:mapToken`** e **Dashboard** (`/dashboard/*`) — Fase 7.
 - **Assistente** (`/assistant/*`) — Fase 11.
