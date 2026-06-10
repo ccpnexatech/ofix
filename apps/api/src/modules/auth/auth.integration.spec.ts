@@ -101,7 +101,8 @@ describe('auth (integration)', () => {
         .post(apiPath('/auth/login'))
         .send({ email, password: DEFAULT_TEST_PASSWORD });
       expect(withoutSlug.status).toBe(400);
-      expect(withoutSlug.body).toMatchObject({ code: 'TENANT_SLUG_REQUIRED' });
+      // Standard error envelope (spec 001): the code travels in details.
+      expect(withoutSlug.body).toMatchObject({ details: { code: 'TENANT_SLUG_REQUIRED' } });
 
       const withSlug = await api(app)
         .post(apiPath('/auth/login'))

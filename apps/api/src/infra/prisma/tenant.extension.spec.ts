@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import { PrismaClient } from '@prisma/client';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
@@ -22,22 +24,18 @@ describe('tenant isolation extension', () => {
     raw = new PrismaClient({ datasourceUrl: url });
     scoped = createPrismaClient(url);
 
-    await raw.customer.deleteMany();
-    await raw.user.deleteMany();
-    await raw.branch.deleteMany();
-    await raw.tenant.deleteMany();
-
+    const suffix = randomUUID().slice(0, 8);
     const a = await raw.tenant.create({
       data: {
         name: 'Tenant A',
-        slug: 'tenant-a',
+        slug: `tenant-a-${suffix}`,
         customers: { create: { name: 'Alice of A', phone: '85 90000-0001' } },
       },
     });
     const b = await raw.tenant.create({
       data: {
         name: 'Tenant B',
-        slug: 'tenant-b',
+        slug: `tenant-b-${suffix}`,
         customers: { create: { name: 'Bob of B', phone: '81 90000-0002' } },
       },
     });
@@ -61,7 +59,9 @@ describe('tenant isolation extension', () => {
 
   it('allows non-scoped models (Tenant) without context', async () => {
     const tenants = await scoped.tenant.findMany();
-    expect(tenants).toHaveLength(2);
+    const ids = tenants.map((t) => t.id);
+    expect(ids).toContain(tenantA);
+    expect(ids).toContain(tenantB);
   });
 
   it('tenant A only sees its own rows', async () => {

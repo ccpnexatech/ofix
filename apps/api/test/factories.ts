@@ -1,6 +1,19 @@
 import { randomUUID } from 'node:crypto';
 
-import { PrismaClient, Role, type Branch, type Tenant, type User } from '@prisma/client';
+import {
+  OrderStatus,
+  PrismaClient,
+  Priority,
+  QuoteStatus,
+  Role,
+  type Branch,
+  type Customer,
+  type Equipment,
+  type Quote,
+  type ServiceOrder,
+  type Tenant,
+  type User,
+} from '@prisma/client';
 import * as argon2 from 'argon2';
 
 import { ARGON2_OPTIONS } from '../src/modules/auth/auth.service';
@@ -79,6 +92,116 @@ export async function createUser(options: CreateUserOptions): Promise<User> {
       passwordHash: await passwordHash(options.password ?? DEFAULT_TEST_PASSWORD),
       role: options.role ?? Role.ADMIN,
       isActive: options.isActive ?? true,
+    },
+  });
+}
+
+export async function createCustomer(
+  tenantId: string,
+  overrides: Partial<Customer> = {},
+): Promise<Customer> {
+  const suffix = randomUUID().slice(0, 8);
+  return testDb().customer.create({
+    data: {
+      tenantId,
+      name: overrides.name ?? `Cliente ${suffix}`,
+      phone: overrides.phone ?? '85 99999-0000',
+      email: overrides.email ?? null,
+    },
+  });
+}
+
+export async function createEquipment(
+  tenantId: string,
+  customerId: string,
+  overrides: Partial<Equipment> = {},
+): Promise<Equipment> {
+  return testDb().equipment.create({
+    data: {
+      tenantId,
+      customerId,
+      type: overrides.type ?? 'Notebook',
+      brand: overrides.brand ?? 'Dell',
+      model: overrides.model ?? 'Inspiron 15',
+      serialNumber: overrides.serialNumber ?? null,
+    },
+  });
+}
+
+export interface CreateOrderOptions {
+  tenantId: string;
+  branchId: string;
+  createdById: string;
+  customerId?: string;
+  equipmentId?: string;
+  status?: OrderStatus;
+  priority?: Priority;
+  assignedTechnicianId?: string | null;
+  technicalDiagnosis?: string | null;
+  deliveredAt?: Date | null;
+  warrantyUntil?: Date | null;
+  promisedAt?: Date | null;
+  code?: string;
+}
+
+/** Composable order factory (spec 008): realistic defaults, any status. */
+export async function createOrder(options: CreateOrderOptions): Promise<ServiceOrder> {
+  const customerId =
+    options.customerId ?? (await createCustomer(options.tenantId)).id;
+  const equipmentId =
+    options.equipmentId ?? (await createEquipment(options.tenantId, customerId)).id;
+  return testDb().serviceOrder.create({
+    data: {
+      tenantId: options.tenantId,
+      branchId: options.branchId,
+      customerId,
+      equipmentId,
+      code: options.code ?? `OS-TEST-${randomUUID().slice(0, 8)}`,
+      status: options.status ?? OrderStatus.RECEIVED,
+      priority: options.priority ?? Priority.NORMAL,
+      reportedIssue: 'Equipamento não liga após queda de energia',
+      technicalDiagnosis: options.technicalDiagnosis ?? null,
+      assignedTechnicianId: options.assignedTechnicianId ?? null,
+      deliveredAt: options.deliveredAt ?? null,
+      warrantyUntil: options.warrantyUntil ?? null,
+      promisedAt: options.promisedAt ?? null,
+      createdById: options.createdById,
+    },
+  });
+}
+
+export interface CreateQuoteOptions {
+  tenantId: string;
+  serviceOrderId: string;
+  status?: QuoteStatus;
+  version?: number;
+  items?: { description: string; quantity: number; unitPriceCents: number }[];
+  tokenExpiresAt?: Date | null;
+}
+
+/** Quote factory with items; totalCents derived from the items (ADR-003). */
+export async function createQuote(options: CreateQuoteOptions): Promise<Quote> {
+  const items = options.items ?? [
+    { description: 'Troca de fonte', quantity: 1, unitPriceCents: 25000 },
+  ];
+  const totalCents = items.reduce((sum, item) => sum + item.quantity * item.unitPriceCents, 0);
+  return testDb().quote.create({
+    data: {
+      tenantId: options.tenantId,
+      serviceOrderId: options.serviceOrderId,
+      version: options.version ?? 1,
+      status: options.status ?? QuoteStatus.DRAFT,
+      totalCents,
+      tokenExpiresAt: options.tokenExpiresAt ?? null,
+      items: {
+        create: items.map((item) => ({
+          kind: 'PART',
+          description: item.description,
+          quantity: item.quantity,
+          unitPriceCents: item.unitPriceCents,
+          subtotalCents: item.quantity * item.unitPriceCents,
+        })),
+      },
     },
   });
 }

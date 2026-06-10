@@ -30,6 +30,29 @@ export async function tokenFor(app: INestApplication<App>, user: User): Promise<
   return app.get(JwtService).signAsync(payload);
 }
 
+/**
+ * Fluent request helper (spec 005 DoD): asTenant(t).asUser(u).get/post/patch.
+ * Signs a real token for the user; the tenant comes from the user claims.
+ */
+export function asUser(app: INestApplication<App>, user: User) {
+  const authed = async (method: 'get' | 'post' | 'patch', path: string, body?: object) => {
+    const token = await tokenFor(app, user);
+    const request = api(app)[method](apiPath(path)).set('Authorization', `Bearer ${token}`);
+    return body === undefined ? request : request.send(body);
+  };
+  return {
+    get: (path: string) => authed('get', path),
+    post: (path: string, body?: object) => authed('post', path, body),
+    patch: (path: string, body?: object) => authed('patch', path, body),
+  };
+}
+
+export function asTenant(app: INestApplication<App>, _tenant: { id: string }) {
+  return {
+    asUser: (user: User) => asUser(app, user),
+  };
+}
+
 export interface TenantIsolationTarget {
   /**
    * Creates a resource in the given tenant/branch and returns the path of the
