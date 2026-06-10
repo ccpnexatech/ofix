@@ -45,12 +45,12 @@ ofix/
 
 ## Definition of Done (Fase 0)
 
-- [ ] `git init`, commit inicial com specs + CLAUDE.md + .claude/, `gh repo create` + push.
-- [ ] Monorepo montado: pnpm workspaces, turbo.json com pipelines `dev`, `build`, `lint`, `typecheck`, `test`.
-- [ ] `apps/api` NestJS 11 bootando com healthcheck `GET /api/v1/health`.
-- [ ] `apps/web` Next.js 15 bootando com página placeholder.
-- [ ] `packages/shared` e `packages/config` criados e consumidos pelos dois apps.
-- [ ] docker-compose com postgres dev + test sobe sem erro.
-- [ ] 1 teste unitário trivial em api e em web rodando no Vitest.
-- [ ] CI no GitHub Actions verde (ver spec 011).
-- [ ] `docs/adr/001-monorepo-nest-next.md` escrito.
+- [x] `git init`, commit inicial com specs + CLAUDE.md + .claude/, `gh repo create` + push. (commit `7adbfc3`; repo https://github.com/ccpnexatech/ofix)
+- [x] Monorepo montado: pnpm workspaces, turbo.json com pipelines `dev`, `build`, `lint`, `typecheck`, `test`. (`pnpm-workspace.yaml`, `turbo.json`)
+- [x] `apps/api` NestJS 11 bootando com healthcheck `GET /api/v1/health`. (verificado via curl: `{"status":"ok","service":"OFIX",...}`)
+- [x] `apps/web` Next.js 15 bootando com página placeholder. (`apps/web/src/app/page.tsx`; build estático ok)
+- [x] `packages/shared` e `packages/config` criados e consumidos pelos dois apps. (api e web importam `@ofix/shared`; presets de `@ofix/config` em todos os pacotes)
+- [x] docker-compose com postgres dev + test sobe sem erro. (`ofix-postgres` e `ofix-postgres-test` healthy)
+- [x] 1 teste unitário trivial em api e em web rodando no Vitest. (`health.controller.spec.ts`, `page.spec.tsx`)
+- [x] CI no GitHub Actions verde (ver spec 011). (run do PR #1: success)
+- [x] `docs/adr/001-monorepo-nest-next.md` escrito.
