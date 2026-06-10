@@ -10,7 +10,10 @@ import { loadEnv } from './infra/config/env';
 import { PrismaModule } from './infra/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BranchesModule } from './modules/branches/branches.module';
+import { CustomersModule } from './modules/customers/customers.module';
 import { HealthModule } from './modules/health/health.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -28,6 +31,9 @@ import { HealthModule } from './modules/health/health.module';
     PrismaModule,
     AuthModule,
     BranchesModule,
+    CustomersModule,
+    OrdersModule,
+    UsersModule,
     HealthModule,
   ],
   providers: [
