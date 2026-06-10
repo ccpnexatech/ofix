@@ -22,6 +22,14 @@ export const TENANT_SCOPED_MODELS: ReadonlySet<Prisma.ModelName> = new Set<Prism
   'OrderEvent',
 ]);
 
+/**
+ * Placeholder for required tenantId fields in create payloads. The extension
+ * always overrides data.tenantId with the ambient tenant (and throws without
+ * one), so this value never reaches the database — it only satisfies the
+ * Prisma input type without letting callers invent a tenant.
+ */
+export const TENANT_INJECTED = '';
+
 const WHERE_OPERATIONS = new Set([
   'findFirst',
   'findFirstOrThrow',

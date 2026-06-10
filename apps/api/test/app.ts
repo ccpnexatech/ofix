@@ -30,6 +30,8 @@ export async function createTestApp(
   const app = moduleRef.createNestApplication<INestApplication<App>>();
   app.use(cookieParser());
   app.setGlobalPrefix(API_PREFIX);
-  await app.init();
+  // Listen on an ephemeral port: concurrent supertest requests against a
+  // non-listening server race on listen() and reset connections.
+  await app.listen(0);
   return app;
 }

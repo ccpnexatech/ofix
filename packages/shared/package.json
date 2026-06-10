@@ -19,7 +19,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap --clean",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "^4.0.0"
@@ -28,6 +29,7 @@
     "@ofix/config": "workspace:*",
     "eslint": "^9.28.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.3"
   }
 }
