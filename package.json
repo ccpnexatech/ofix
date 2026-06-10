@@ -15,10 +15,15 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "db:migrate": "pnpm --filter @ofix/api db:migrate",
+    "db:studio": "pnpm --filter @ofix/api db:studio",
+    "db:erd": "pnpm --filter @ofix/api db:erd",
+    "db:seed": "tsx scripts/seed-demo.ts"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
+    "tsx": "^4.20.3",
     "turbo": "^2.5.4"
   }
 }

@@ -1,0 +1,275 @@
+// OFIX database schema — spec 002.
+// Multi-tenancy by discriminator column (tenantId) enforced in code by a
+// Prisma Client Extension (ADR-002). Money is always integer cents (ADR-003).
+// Domain enums mirror packages/shared/src/enums.ts (single source of truth).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Skipped when DISABLE_ERD=true (CI and routine generates); run via `pnpm db:erd`.
+generator erd {
+  provider                  = "prisma-erd-generator"
+  output                    = "../../../docs/assets/erd.svg"
+  includeRelationFromFields = true
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TECHNICIAN
+  ATTENDANT
+}
+
+enum OrderStatus {
+  RECEIVED
+  IN_DIAGNOSIS
+  QUOTE_SENT
+  APPROVED
+  REJECTED
+  IN_REPAIR
+  READY
+  DELIVERED
+  CANCELED
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum ItemKind {
+  LABOR
+  PART
+}
+
+enum ActorType {
+  USER
+  CUSTOMER
+  SYSTEM
+}
+
+model Tenant {
+  id             String   @id @default(uuid())
+  name           String
+  slug           String   @unique // used in URLs and on the public map
+  document       String? // CNPJ
+  publicMapToken String   @unique @default(uuid())
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  branches   Branch[]
+  users      User[]
+  customers  Customer[]
+  equipments Equipment[]
+  orders     ServiceOrder[]
+  quotes     Quote[]
+  events     OrderEvent[]
+}
+
+model Branch {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String // "Matriz", "Filial Aldeota"
+  phone     String?
+  address   String // full human-readable address
+  city      String
+  state     String
+  zipCode   String?
+  latitude  Decimal? @db.Decimal(9, 6) // for the public map
+  longitude Decimal? @db.Decimal(9, 6)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id])
+  users  User[]
+  orders ServiceOrder[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+}
+
+model User {
+  id             String   @id @default(uuid())
+  tenantId       String
+  branchId       String? // null = access to ALL branches of the tenant
+  name           String
+  email          String
+  passwordHash   String // Argon2id
+  role           Role
+  isActive       Boolean  @default(true)
+  completedTours String[] @default([]) // ids of completed tours (spec 009)
+  createdAt      DateTime @default(now())
+
+  tenant         Tenant         @relation(fields: [tenantId], references: [id])
+  branch         Branch?        @relation(fields: [branchId], references: [id])
+  assignedOrders ServiceOrder[] @relation("AssignedTechnician")
+  createdOrders  ServiceOrder[] @relation("OrderCreatedBy")
+  refreshTokens  RefreshToken[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  phone     String
+  email     String?
+  document  String?
+  address   String?
+  notes     String?
+  createdAt DateTime @default(now())
+
+  tenant     Tenant         @relation(fields: [tenantId], references: [id])
+  equipments Equipment[]
+  orders     ServiceOrder[]
+
+  @@index([tenantId, name])
+}
+
+model Equipment {
+  id           String  @id @default(uuid())
+  tenantId     String
+  customerId   String
+  type         String
+  brand        String
+  model        String
+  serialNumber String?
+  notes        String?
+
+  tenant   Tenant         @relation(fields: [tenantId], references: [id])
+  customer Customer       @relation(fields: [customerId], references: [id])
+  orders   ServiceOrder[]
+
+  @@index([tenantId])
+  @@index([customerId])
+}
+
+model ServiceOrder {
+  id                   String      @id @default(uuid())
+  tenantId             String
+  branchId             String // an order ALWAYS belongs to a branch
+  code                 String // "OS-2026-0001" — sequential per tenant+year (RN-13)
+  customerId           String
+  equipmentId          String
+  status               OrderStatus @default(RECEIVED)
+  priority             Priority    @default(NORMAL)
+  reportedIssue        String
+  technicalDiagnosis   String?
+  assignedTechnicianId String?
+  warrantyParentId     String? // self-relation (warranty re-open order)
+  promisedAt           DateTime?
+  deliveredAt          DateTime?
+  warrantyUntil        DateTime?
+  canceledReason       String?
+  createdById          String
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  tenant             Tenant         @relation(fields: [tenantId], references: [id])
+  branch             Branch         @relation(fields: [branchId], references: [id])
+  customer           Customer       @relation(fields: [customerId], references: [id])
+  equipment          Equipment      @relation(fields: [equipmentId], references: [id])
+  assignedTechnician User?          @relation("AssignedTechnician", fields: [assignedTechnicianId], references: [id])
+  createdBy          User           @relation("OrderCreatedBy", fields: [createdById], references: [id])
+  warrantyParent     ServiceOrder?  @relation("WarrantyOrders", fields: [warrantyParentId], references: [id])
+  warrantyChildren   ServiceOrder[] @relation("WarrantyOrders")
+  quotes             Quote[]
+  events             OrderEvent[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, status])
+  @@index([tenantId, branchId])
+  @@index([customerId])
+  @@index([assignedTechnicianId])
+}
+
+// RN-13: per tenant+year sequence without race conditions
+model OrderCodeSequence {
+  tenantId  String
+  year      Int
+  lastValue Int    @default(0)
+
+  @@id([tenantId, year])
+}
+
+model Quote {
+  id              String      @id @default(uuid())
+  tenantId        String
+  serviceOrderId  String
+  version         Int // 1, 2, 3... per order
+  status          QuoteStatus @default(DRAFT)
+  publicToken     String      @unique @default(uuid())
+  tokenExpiresAt  DateTime?
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  rejectionReason String?
+  totalCents      Int         @default(0) // recalculated on every item change, inside the transaction
+  createdAt       DateTime    @default(now())
+
+  tenant       Tenant       @relation(fields: [tenantId], references: [id])
+  serviceOrder ServiceOrder @relation(fields: [serviceOrderId], references: [id])
+  items        QuoteItem[]
+
+  @@unique([serviceOrderId, version])
+  @@index([publicToken])
+}
+
+model QuoteItem {
+  id             String   @id @default(uuid())
+  quoteId        String
+  kind           ItemKind
+  description    String
+  quantity       Int
+  unitPriceCents Int
+  subtotalCents  Int
+
+  quote Quote @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+}
+
+// Append-only audit trail — NEVER update/delete
+model OrderEvent {
+  id             String       @id @default(uuid())
+  tenantId       String
+  serviceOrderId String
+  actorType      ActorType
+  actorId        String?
+  type           String // ORDER_CREATED, STATUS_CHANGED, QUOTE_SENT, QUOTE_APPROVED...
+  fromStatus     OrderStatus?
+  toStatus       OrderStatus?
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+
+  tenant       Tenant       @relation(fields: [tenantId], references: [id])
+  serviceOrder ServiceOrder @relation(fields: [serviceOrderId], references: [id])
+
+  @@index([serviceOrderId, createdAt])
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
