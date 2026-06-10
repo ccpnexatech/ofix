@@ -1,0 +1,34 @@
+{
+  "name": "@ofix/api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "OFIX REST API (NestJS)",
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.3",
+    "@nestjs/core": "^11.1.3",
+    "@nestjs/platform-express": "^11.1.3",
+    "@ofix/shared": "workspace:*",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.7",
+    "@nestjs/testing": "^11.1.3",
+    "@ofix/config": "workspace:*",
+    "@swc/core": "^1.12.1",
+    "@types/node": "^22.15.30",
+    "eslint": "^9.28.0",
+    "typescript": "^5.8.3",
+    "unplugin-swc": "^1.5.4",
+    "vitest": "^3.2.3"
+  }
+}

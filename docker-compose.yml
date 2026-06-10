@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ofix-postgres
+    environment:
+      POSTGRES_USER: ofix
+      POSTGRES_PASSWORD: ofix
+      POSTGRES_DB: ofix
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ofix -d ofix"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: ofix-postgres-test
+    environment:
+      POSTGRES_USER: ofix
+      POSTGRES_PASSWORD: ofix
+      POSTGRES_DB: ofix_test
+    ports:
+      - "5433:5432"
+    # No volume on purpose: test database is disposable by design.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ofix -d ofix_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
