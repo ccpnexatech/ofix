@@ -30,4 +30,14 @@ describe('rate limit on /auth/login (integration)', () => {
     const sixth = await attempt();
     expect(sixth.status).toBe(429);
   });
+
+  it('caps /public/* at 20 req/min/IP (spec 003)', async () => {
+    const attempt = () => api(app).get(apiPath('/public/quotes/probe-token'));
+    for (let i = 0; i < 20; i += 1) {
+      const response = await attempt();
+      expect(response.status).toBe(404); // unknown token, but not throttled yet
+    }
+    const twentyFirst = await attempt();
+    expect(twentyFirst.status).toBe(429);
+  });
 });
