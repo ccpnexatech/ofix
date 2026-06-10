@@ -7,6 +7,8 @@ export default defineConfig({
     include: ['src/**/*.spec.ts'],
     // Migrates the disposable test database (port 5433) before any test runs.
     globalSetup: ['test/global-setup.ts'],
+    // Integration suites share one test database; run files serially.
+    fileParallelism: false,
   },
   plugins: [
     // Vitest's esbuild does not emit decorator metadata, which Nest DI relies on; SWC does.
