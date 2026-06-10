@@ -4,7 +4,9 @@ import { createInterface, type Interface } from 'node:readline/promises';
 
 let rl: Interface | undefined;
 
-const interactive = stdin.isTTY === true;
+// Typed boolean, but undefined at runtime when stdin is not a terminal;
+// the falsy check below handles both.
+const interactive = stdin.isTTY;
 
 function prompts(): Interface {
   rl ??= createInterface({ input: stdin, output: stdout });
