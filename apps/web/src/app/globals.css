@@ -20,9 +20,9 @@
   --text-on-brand: #451f04;
 
   /* Semantic */
-  --success: #15803d;
+  --success: #166534;
   --success-bg: #e3f5e8;
-  --warning: #a16207;
+  --warning: #854d0e;
   --warning-bg: #fcf4dc;
   --danger: #b91c1c;
   --danger-bg: #fceaea;
@@ -30,19 +30,19 @@
   --info-bg: #e7eefd;
 
   /* OS status — one token per status (badges + dashboard donut) */
-  --status-received: #2563eb;
+  --status-received: #1d4ed8;
   --status-received-bg: #e7eefd;
   --status-in-diagnosis: #7c3aed;
   --status-in-diagnosis-bg: #f1eafd;
-  --status-quote-sent: #b45f08;
+  --status-quote-sent: #92490e;
   --status-quote-sent-bg: #fcefd7;
   --status-approved: #0f766e;
   --status-approved-bg: #ddf3f0;
   --status-rejected: #be123c;
   --status-rejected-bg: #fce7ec;
-  --status-in-repair: #c2410c;
+  --status-in-repair: #9a3412;
   --status-in-repair-bg: #fdeadd;
-  --status-ready: #15803d;
+  --status-ready: #166534;
   --status-ready-bg: #e3f5e8;
   --status-delivered: #166534;
   --status-delivered-bg: #e1f2e5;
