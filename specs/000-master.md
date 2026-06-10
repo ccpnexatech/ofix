@@ -14,8 +14,8 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 | 001 | Arquitetura, monorepo, convenções | ✅ concluída (Fase 0) |
 | 002 | Banco de dados multi-tenant + filiais + scripts operacionais | ✅ concluída (Fase 1) |
 | 003 | Autenticação, sessão e RBAC | ✅ concluída (Fase 2) |
-| 004 | Regras de negócio (RN-01..RN-15) e máquina de estados | — |
-| 005 | API REST (contratos) | — |
+| 004 | Regras de negócio (RN-01..RN-15) e máquina de estados | 🔶 parcial — Fase 3 ok; RN-05 (F4), RN-14/15 (F7) |
+| 005 | API REST (contratos) | 🔶 parcial — Fase 3 ok; quotes/público (F4), dashboard/mapa (F7) |
 | 006 | Frontend (rotas, telas, estados) | — |
 | 007 | Design system e identidade visual | — |
 | 008 | Estratégia de testes | — |
@@ -31,7 +31,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 - [x] **Fase 0 — Fundação:** git + gh repo, monorepo, tooling, CI verde com teste hello-world. (Specs 001, 011-parcial) — PR #1
 - [x] **Fase 1 — Banco e scripts:** schema Prisma multi-tenant completo, migrations, docker compose, scripts operacionais de tenant/filial/usuário, seed básico, ERD gerado. (Spec 002) — PR #2
 - [x] **Fase 2 — Auth:** login, refresh rotativo, guards, RBAC, escopo de tenant/filial no request. Testes. (Spec 003) — PR #3
-- [ ] **Fase 3 — Domínio OS:** customers, equipments, service orders, máquina de estados, eventos de auditoria. Testes de TODAS as RN de transição + isolamento de tenant. (Specs 004, 005)
+- [x] **Fase 3 — Domínio OS:** customers, equipments, service orders, máquina de estados, eventos de auditoria. Testes de TODAS as RN de transição + isolamento de tenant. (Specs 004, 005) — PR #4
 - [ ] **Fase 4 — Orçamentos:** quotes versionadas, itens, envio, fluxo público de aprovação por token, expiração. Testes. (Specs 004, 005)
 - [ ] **Fase 5 — Design system:** tokens, temas claro/escuro, fontes, componentes base documentados. (Spec 007)
 - [ ] **Fase 6 — Telas core:** layout autenticado, login, lista/detalhe/wizard de OS, clientes, página pública `/q/[token]`. (Spec 006)
