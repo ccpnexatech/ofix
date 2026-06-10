@@ -1,0 +1,24 @@
+{
+  "name": "ofix",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Multi-tenant service order management for repair shops",
+  "author": "Caio César Passos Viana Ponte",
+  "license": "MIT",
+  "packageManager": "pnpm@9.1.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "turbo": "^2.5.4"
+  }
+}
