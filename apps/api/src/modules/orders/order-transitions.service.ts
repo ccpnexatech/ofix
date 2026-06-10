@@ -12,7 +12,7 @@ import {
   type TransitionBody,
   type TransitionContext,
 } from '@ofix/shared';
-import { ActorType } from '@prisma/client';
+import { ActorType, type ServiceOrder } from '@prisma/client';
 
 import type { AuthenticatedUser } from '../../common/authenticated-user';
 import { InvalidTransitionError, WarrantyReopenError } from '../../common/errors/domain.errors';
@@ -21,6 +21,7 @@ import { currentTenantId } from '../../infra/prisma/tenant-context';
 import { TENANT_INJECTED } from '../../infra/prisma/tenant.extension';
 import { ORDER_DETAIL_INCLUDE } from './orders.repository';
 import { OrdersService, nextOrderCode } from './orders.service';
+import { QuoteExpirationService } from './quote-expiration.service';
 
 export const QUOTE_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // RN-03: 7 days
 
@@ -31,6 +32,14 @@ const TECHNICIAN_ACTIONS: ReadonlySet<OrderAction> = new Set([
   OrderAction.START_REPAIR,
   OrderAction.MARK_READY,
 ]);
+
+/** Who is performing the transition — staff (USER) or the customer via public token. */
+export interface TransitionActor {
+  type: ActorType;
+  id: string | null;
+  /** RN-04: how a quote decision was made. */
+  method?: 'in_person' | 'public_token';
+}
 
 /** Permission matrix for transitions (spec 004), tested tabularly. */
 function assertActionPermitted(
@@ -63,20 +72,43 @@ export class OrderTransitionsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly ordersService: OrdersService,
+    private readonly expiration: QuoteExpirationService,
   ) {}
 
-  /** Single entry point for status changes (ADR-006). */
+  /** Authenticated entry point for status changes (ADR-006). */
   async execute(orderId: string, body: TransitionBody, user: AuthenticatedUser) {
     const order = await this.ordersService.getScoped(orderId, user);
     assertActionPermitted(user, body.action, order.assignedTechnicianId);
+    const isDecision =
+      body.action === OrderAction.APPROVE_QUOTE || body.action === OrderAction.REJECT_QUOTE;
+    return this.applyTransition(order, body.action, {
+      reason: body.payload?.reason,
+      actor: {
+        type: ActorType.USER,
+        id: user.id,
+        ...(isDecision ? { method: 'in_person' as const } : {}),
+      },
+    });
+  }
 
-    const latestQuote = await this.prisma.client.quote.findFirst({
+  /**
+   * Core of ADR-006, shared by the authenticated endpoint and the public
+   * token flow (actor CUSTOMER). Must run inside a tenant context.
+   */
+  async applyTransition(
+    order: ServiceOrder,
+    action: OrderAction,
+    options: { reason?: string; actor: TransitionActor },
+  ) {
+    const { reason, actor } = options;
+    const rawQuote = await this.prisma.client.quote.findFirst({
       where: { serviceOrderId: order.id },
       orderBy: { version: 'desc' },
       include: { _count: { select: { items: true } } },
     });
+    // RN-05: lazy expiration — an expired SENT quote behaves as EXPIRED here.
+    const latestQuote = rawQuote ? await this.expiration.resolve(rawQuote) : null;
 
-    const reason = body.payload?.reason;
     const ctx: TransitionContext = {
       hasAssignedTechnician: order.assignedTechnicianId !== null,
       technicalDiagnosis: order.technicalDiagnosis,
@@ -90,14 +122,14 @@ export class OrderTransitionsService {
       reason,
     };
 
-    const check = canTransition(order.status, body.action, ctx);
+    const check = canTransition(order.status, action, ctx);
     if (!check.ok) {
       throw new InvalidTransitionError(check.message, check.code);
     }
 
-    // RN-04: in-person decisions act on the latest SENT quote.
+    // RN-04: decisions act on the latest SENT (non-expired) quote.
     if (
-      (body.action === OrderAction.APPROVE_QUOTE || body.action === OrderAction.REJECT_QUOTE) &&
+      (action === OrderAction.APPROVE_QUOTE || action === OrderAction.REJECT_QUOTE) &&
       latestQuote?.status !== QuoteStatus.SENT
     ) {
       throw new InvalidTransitionError('Não há orçamento enviado para decidir', 'RN-04');
@@ -106,7 +138,7 @@ export class OrderTransitionsService {
     const now = new Date();
     // RN-09: side effects, status change and audit event in ONE transaction.
     return this.prisma.client.$transaction(async (tx) => {
-      if (body.action === OrderAction.SEND_QUOTE && latestQuote) {
+      if (action === OrderAction.SEND_QUOTE && latestQuote) {
         // RN-03: quote goes SENT with a fresh public token valid for 7 days.
         await tx.quote.update({
           where: { id: latestQuote.id },
@@ -117,13 +149,13 @@ export class OrderTransitionsService {
           },
         });
       }
-      if (body.action === OrderAction.APPROVE_QUOTE && latestQuote) {
+      if (action === OrderAction.APPROVE_QUOTE && latestQuote) {
         await tx.quote.update({
           where: { id: latestQuote.id },
           data: { status: QuoteStatus.APPROVED, approvedAt: now },
         });
       }
-      if (body.action === OrderAction.REJECT_QUOTE && latestQuote) {
+      if (action === OrderAction.REJECT_QUOTE && latestQuote) {
         await tx.quote.update({
           where: { id: latestQuote.id },
           data: { status: QuoteStatus.REJECTED, rejectedAt: now, rejectionReason: reason },
@@ -135,10 +167,10 @@ export class OrderTransitionsService {
         data: {
           status: check.nextStatus,
           // RN-06: delivery stamps deliveredAt and 90 days of warranty.
-          ...(body.action === OrderAction.DELIVER
+          ...(action === OrderAction.DELIVER
             ? { deliveredAt: now, warrantyUntil: new Date(now.getTime() + WARRANTY_DAYS_MS) }
             : {}),
-          ...(body.action === OrderAction.CANCEL ? { canceledReason: reason } : {}),
+          ...(action === OrderAction.CANCEL ? { canceledReason: reason } : {}),
         },
         include: ORDER_DETAIL_INCLUDE,
       });
@@ -147,19 +179,15 @@ export class OrderTransitionsService {
         data: {
           tenantId: TENANT_INJECTED,
           serviceOrderId: order.id,
-          actorType: ActorType.USER,
-          actorId: user.id,
+          actorType: actor.type,
+          actorId: actor.id,
           type: 'STATUS_CHANGED',
           fromStatus: order.status,
           toStatus: check.nextStatus,
           metadata: {
-            action: body.action,
+            action,
             ...(reason === undefined ? {} : { reason }),
-            // RN-04: manual decisions are flagged as in-person (public flow = phase 4).
-            ...(body.action === OrderAction.APPROVE_QUOTE ||
-            body.action === OrderAction.REJECT_QUOTE
-              ? { method: 'in_person' }
-              : {}),
+            ...(actor.method === undefined ? {} : { method: actor.method }),
           },
         },
       });
