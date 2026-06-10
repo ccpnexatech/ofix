@@ -171,9 +171,9 @@ Todos em TypeScript, executados com `tsx`, interativos quando sem argumentos, e 
 
 ## Definition of Done (Fase 1)
 
-- [ ] Schema completo migrado (`prisma migrate dev`) sem warnings.
-- [ ] Prisma Client Extension de tenant implementada em `apps/api/src/infra/prisma` com teste provando que (a) query sem tenant no contexto lança erro e (b) tenant A não enxerga dados do tenant B.
-- [ ] Os 6 scripts operacionais funcionando, com `--help` e documentados em `docs/scripts.md`.
-- [ ] `pnpm db:erd` gerando `docs/assets/erd.svg`; `docs/database.md` completo (ERD + dicionário + relacionamentos + índices).
-- [ ] Seed básico: 2 tenants ("TecNorte" com 2 filiais; "Eletrolar Recife" com 1), usuários por papel.
-- [ ] ADR-002 (multi-tenant por coluna), ADR-003 (dinheiro em centavos), ADR-007 (gestão de tenant via scripts) escritos.
+- [x] Schema completo migrado (`prisma migrate dev`) sem warnings. — `apps/api/prisma/migrations/20260610135003_init/`
+- [x] Prisma Client Extension de tenant implementada em `apps/api/src/infra/prisma` com teste provando que (a) query sem tenant no contexto lança erro e (b) tenant A não enxerga dados do tenant B. — `tenant.extension.ts` + `tenant.extension.spec.ts` (6 testes de integração contra o banco de teste)
+- [x] Os 6 scripts operacionais funcionando, com `--help` e documentados em `docs/scripts.md`. — `scripts/*.ts`; smoke-test real dos 6 (o passo destrutivo do `reset-db` validado até a guarda de confirmação do Prisma)
+- [x] `pnpm db:erd` gerando `docs/assets/erd.svg`; `docs/database.md` completo (ERD + dicionário + relacionamentos + índices). — `docs/assets/erd.svg` + `docs/database.md`
+- [x] Seed básico: 2 tenants ("TecNorte" com 2 filiais; "Eletrolar Recife" com 1), usuários por papel. — `scripts/seed-demo.ts` (idempotente, executado 2×)
+- [x] ADR-002 (multi-tenant por coluna), ADR-003 (dinheiro em centavos), ADR-007 (gestão de tenant via scripts) escritos. — `docs/adr/002..003..007`
