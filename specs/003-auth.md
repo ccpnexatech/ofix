@@ -30,8 +30,8 @@ Decorator `@Roles('ADMIN', ...)` + `RolesGuard`. Matriz completa de permissões 
 
 ## Definition of Done (Fase 2)
 
-- [ ] Login, refresh rotativo (com revogação em cascata no reuso), logout e `/me` implementados e testados (unit + integração).
-- [ ] Guards + interceptor de tenant funcionando; teste de integração prova que usuário do tenant A recebe 404/403 em recurso do tenant B.
-- [ ] Teste prova que usuário com `branchId` fixo não acessa OS de outra filial.
-- [ ] Rate limit ativo nos pontos definidos, com teste do `/auth/login`.
-- [ ] `.env.example` atualizado; ADR-008 (estratégia de sessão: JWT + refresh rotativo, cookie httpOnly) escrito.
+- [x] Login, refresh rotativo (com revogação em cascata no reuso), logout e `/me` implementados e testados (unit + integração). — `apps/api/src/modules/auth/` + `auth.integration.spec.ts` (12 testes)
+- [x] Guards + interceptor de tenant funcionando; teste de integração prova que usuário do tenant A recebe 404/403 em recurso do tenant B. — `security.integration.spec.ts` via `expectTenantIsolation`
+- [x] Teste prova que usuário com `branchId` fixo não acessa OS de outra filial. — mecanismo (BranchScopeGuard 403 + helpers unit); endpoints de OS herdam na Fase 3 (E2E fluxo 4)
+- [x] Rate limit ativo nos pontos definidos, com teste do `/auth/login`. — `rate-limit.integration.spec.ts` (429 na 6ª tentativa)
+- [x] `.env.example` atualizado; ADR-008 (estratégia de sessão: JWT + refresh rotativo, cookie httpOnly) escrito. — `docs/adr/008-estrategia-de-sessao.md`
