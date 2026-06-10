@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
@@ -13,6 +14,8 @@ import { BranchesModule } from './modules/branches/branches.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { HealthModule } from './modules/health/health.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { PublicModule } from './modules/public/public.module';
+import { QuotesModule } from './modules/quotes/quotes.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -28,11 +31,14 @@ import { UsersModule } from './modules/users/users.module';
         };
       },
     }),
+    ScheduleModule.forRoot(), // daily quote-expiration sweep (RN-05)
     PrismaModule,
     AuthModule,
     BranchesModule,
     CustomersModule,
     OrdersModule,
+    QuotesModule,
+    PublicModule,
     UsersModule,
     HealthModule,
   ],
