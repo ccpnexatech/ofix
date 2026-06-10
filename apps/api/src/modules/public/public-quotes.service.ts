@@ -29,12 +29,7 @@ export class PublicQuotesService {
 
   async view(token: string): Promise<PublicQuoteResponse> {
     const quote = await this.findByToken(token);
-    if (QuoteExpirationService.isExpired(quote)) {
-      await this.expiration.resolve(quote);
-      throw new GoneException(
-        'Este orçamento expirou. Entre em contato com a assistência para receber um novo link.',
-      );
-    }
+    await this.assertNotExpired(quote);
     const order = await this.prisma.unscoped.serviceOrder.findUniqueOrThrow({
       where: { id: quote.serviceOrderId },
       include: {
@@ -82,12 +77,7 @@ export class PublicQuotesService {
 
   private async decide(token: string, action: OrderAction, reason?: string) {
     const quote = await this.findByToken(token);
-    if (QuoteExpirationService.isExpired(quote)) {
-      await this.expiration.resolve(quote);
-      throw new GoneException(
-        'Este orçamento expirou. Entre em contato com a assistência para receber um novo link.',
-      );
-    }
+    await this.assertNotExpired(quote);
     if (quote.status !== QuoteStatus.SENT) {
       throw new UnprocessableEntityException('Este orçamento já foi decidido');
     }
@@ -114,6 +104,18 @@ export class PublicQuotesService {
       }),
     );
     return { orderStatus: updated.status };
+  }
+
+  /** RN-05: expired links are 410 Gone — lazily marked or already EXPIRED. */
+  private async assertNotExpired(quote: Quote): Promise<void> {
+    if (QuoteExpirationService.isExpired(quote)) {
+      await this.expiration.resolve(quote);
+    } else if (quote.status !== QuoteStatus.EXPIRED) {
+      return;
+    }
+    throw new GoneException(
+      'Este orçamento expirou. Entre em contato com a assistência para receber um novo link.',
+    );
   }
 
   private async findByToken(token: string): Promise<Quote> {
