@@ -12,7 +12,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 | Spec | Tema | Status |
 |---|---|---|
 | 001 | Arquitetura, monorepo, convenções | ✅ concluída (Fase 0) |
-| 002 | Banco de dados multi-tenant + filiais + scripts operacionais | — |
+| 002 | Banco de dados multi-tenant + filiais + scripts operacionais | ✅ concluída (Fase 1) |
 | 003 | Autenticação, sessão e RBAC | — |
 | 004 | Regras de negócio (RN-01..RN-15) e máquina de estados | — |
 | 005 | API REST (contratos) | — |
@@ -29,7 +29,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 > Marcar `[x]` SOMENTE após o ritual de DoD (abaixo). A fase atual é a primeira desmarcada.
 
 - [x] **Fase 0 — Fundação:** git + gh repo, monorepo, tooling, CI verde com teste hello-world. (Specs 001, 011-parcial) — PR #1
-- [ ] **Fase 1 — Banco e scripts:** schema Prisma multi-tenant completo, migrations, docker compose, scripts operacionais de tenant/filial/usuário, seed básico, ERD gerado. (Spec 002)
+- [x] **Fase 1 — Banco e scripts:** schema Prisma multi-tenant completo, migrations, docker compose, scripts operacionais de tenant/filial/usuário, seed básico, ERD gerado. (Spec 002) — PR #2
 - [ ] **Fase 2 — Auth:** login, refresh rotativo, guards, RBAC, escopo de tenant/filial no request. Testes. (Spec 003)
 - [ ] **Fase 3 — Domínio OS:** customers, equipments, service orders, máquina de estados, eventos de auditoria. Testes de TODAS as RN de transição + isolamento de tenant. (Specs 004, 005)
 - [ ] **Fase 4 — Orçamentos:** quotes versionadas, itens, envio, fluxo público de aprovação por token, expiração. Testes. (Specs 004, 005)
