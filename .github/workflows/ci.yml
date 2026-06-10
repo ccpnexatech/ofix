@@ -40,6 +40,13 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        env:
+          # mermaid-cli (ERD generator) pulls puppeteer; the browser download
+          # is pointless in CI because the ERD is only generated locally.
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+
+      - name: Generate Prisma client
+        run: pnpm --filter @ofix/api db:generate
 
       - name: Lint
         run: pnpm lint
