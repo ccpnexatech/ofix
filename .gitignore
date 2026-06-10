@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+.next/
+out/
+build/
+.turbo/
+
+# Tests
+coverage/
+playwright-report/
+test-results/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Prisma
+*.db
+
+# IDE / OS
+.idea/
+.DS_Store
+*.log
+
+# Local Claude settings
+.claude/settings.local.json
