@@ -47,11 +47,12 @@ export async function nextOrderCode(
   now: Date = new Date(),
 ): Promise<string> {
   const year = now.getFullYear();
-  // INSERT ... ON CONFLICT keeps this race-free; the increment takes a row lock.
-  await tx.orderCodeSequence.upsert({
-    where: { tenantId_year: { tenantId, year } },
-    create: { tenantId, year, lastValue: 0 },
-    update: {},
+  // createMany+skipDuplicates compiles to INSERT ... ON CONFLICT DO NOTHING
+  // (atomic — Prisma upsert falls back to read-then-write and loses races);
+  // the increment below takes a row lock, so concurrent codes never collide.
+  await tx.orderCodeSequence.createMany({
+    data: [{ tenantId, year, lastValue: 0 }],
+    skipDuplicates: true,
   });
   const sequence = await tx.orderCodeSequence.update({
     where: { tenantId_year: { tenantId, year } },
