@@ -45,6 +45,7 @@ import {
   getRevenueByMonth,
   getSummary,
 } from '../../../features/dashboard/queries';
+import { InsightsCard } from '../../../features/assistant/insights-card';
 import { listOrders, orderKeys } from '../../../features/orders/queries';
 import { useAuth } from '../../../lib/auth';
 import { formatCents, formatDate } from '../../../lib/format';
@@ -300,6 +301,8 @@ function DashboardContent() {
           )}
         </CardContent>
       </Card>
+
+      <InsightsCard branchId={branchId} />
 
       {user?.role === Role.ADMIN && (
         <Card data-tour="branches-comparison">
