@@ -20,8 +20,8 @@
     "db:studio": "pnpm --filter @ofix/api db:studio",
     "db:erd": "pnpm --filter @ofix/api db:erd",
     "db:seed": "tsx scripts/seed-demo.ts",
-    "test:e2e": "playwright test",
-    "shots": "SHOTS_ONLY=1 playwright test"
+    "test:e2e": "playwright test --project=desktop --project=mobile",
+    "shots": "playwright test --project=shots"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

@@ -9,8 +9,6 @@ const JWT_SECRET = process.env.JWT_SECRET ?? 'e2e-secret-with-at-least-32-charac
 
 export default defineConfig({
   testDir: './e2e',
-  testIgnore: process.env.SHOTS_ONLY ? undefined : '**/shots.spec.ts',
-  testMatch: process.env.SHOTS_ONLY ? '**/shots.spec.ts' : undefined,
   timeout: 60_000,
   expect: { timeout: 10_000 },
   // Flows share one database; serial keeps them deterministic.
@@ -29,12 +27,22 @@ export default defineConfig({
     {
       name: 'desktop',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: ['**/02-public-approval.spec.ts', '**/05-public-map.spec.ts'],
+      testIgnore: [
+        '**/02-public-approval.spec.ts',
+        '**/05-public-map.spec.ts',
+        '**/shots.spec.ts',
+      ],
     },
     {
       name: 'mobile',
       use: { ...devices['Pixel 7'] },
       testMatch: ['**/02-public-approval.spec.ts', '**/05-public-map.spec.ts'],
+    },
+    // `pnpm shots` only — the screenshot pack for the user guide (spec 012).
+    {
+      name: 'shots',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: ['**/shots.spec.ts'],
     },
   ],
   webServer: [

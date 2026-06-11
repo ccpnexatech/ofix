@@ -2,10 +2,17 @@ import { z } from 'zod';
 
 import { paginationQuerySchema } from './pagination';
 
+/** HTML forms submit empty strings; an empty optional e-mail means absent. */
+const optionalEmail = z
+  .email('E-mail inválido')
+  .toLowerCase()
+  .optional()
+  .or(z.literal('').transform(() => undefined));
+
 export const createCustomerBodySchema = z.object({
   name: z.string().trim().min(2, 'Nome deve ter no mínimo 2 caracteres'),
   phone: z.string().trim().min(8, 'Telefone inválido'),
-  email: z.email('E-mail inválido').toLowerCase().optional(),
+  email: optionalEmail,
   document: z.string().trim().optional(),
   address: z.string().trim().optional(),
   notes: z.string().trim().optional(),

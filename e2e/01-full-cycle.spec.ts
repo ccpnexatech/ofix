@@ -25,7 +25,7 @@ test('fluxo 1 — ciclo completo da OS pela interface', async ({ page }) => {
 
   // Step 3: issue + branch.
   await page.getByLabel('Defeito relatado').fill('Tela pisca e desliga sob carga');
-  await page.getByLabel('Filial').click();
+  await page.getByRole('combobox', { name: 'Filial', exact: true }).click();
   await page.getByRole('option', { name: 'Matriz Fortaleza' }).click();
   await shot(page, 'ciclo-completo', '03-wizard-detalhes');
   await page.getByRole('button', { name: 'Revisar' }).click();
@@ -56,6 +56,7 @@ test('fluxo 1 — ciclo completo da OS pela interface', async ({ page }) => {
   // Quote with two items, then send.
   await page.getByRole('button', { name: 'Nova versão' }).click();
   await expect(page.getByText('v1 · DRAFT')).toBeVisible();
+  await page.getByRole('button', { name: 'Adicionar item' }).click();
   await page.getByLabel('Descrição').fill('Flat de vídeo');
   await page.getByLabel('Unitário (R$)').fill('180.00');
   await page.getByRole('button', { name: 'Adicionar item' }).click();
