@@ -19,9 +19,12 @@
     "db:migrate": "pnpm --filter @ofix/api db:migrate",
     "db:studio": "pnpm --filter @ofix/api db:studio",
     "db:erd": "pnpm --filter @ofix/api db:erd",
-    "db:seed": "tsx scripts/seed-demo.ts"
+    "db:seed": "tsx scripts/seed-demo.ts",
+    "test:e2e": "playwright test",
+    "shots": "SHOTS_ONLY=1 playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "prettier": "^3.5.3",
     "tsx": "^4.20.3",
     "turbo": "^2.5.4"
