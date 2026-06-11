@@ -12,7 +12,10 @@ function currentTheme(): Theme {
 }
 
 /** Switches data-theme and persists in a cookie (read by the head script). */
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({
+  className,
+  ...rest
+}: { className?: string } & Record<`data-${string}`, string>) {
   // Render a stable placeholder until mounted: the server cannot know the theme.
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
 
@@ -30,6 +33,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <button
       type="button"
+      {...rest}
       onClick={toggle}
       aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
       className={cn(
