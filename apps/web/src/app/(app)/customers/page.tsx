@@ -90,6 +90,7 @@ export default function CustomersPage() {
         actions={
           canWrite && (
             <Button
+              data-tour="new-customer"
               onClick={() => {
                 setCreateOpen(true);
               }}
@@ -100,7 +101,7 @@ export default function CustomersPage() {
         }
       />
 
-      <div className="relative max-w-sm">
+      <div className="relative max-w-sm" data-tour="customers-search">
         <Search
           aria-hidden
           className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-text-faint"
@@ -162,7 +163,7 @@ export default function CustomersPage() {
 
       {customers.isSuccess && customers.data.data.length > 0 && (
         <>
-          <Table>
+          <Table data-tour="customers-table">
             <TableHeader>
               <TableRow>
                 <TableHead>Nome</TableHead>

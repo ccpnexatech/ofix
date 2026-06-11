@@ -57,7 +57,7 @@ export default function InternalMapPage() {
         title="Filiais no mapa"
         description="Unidades ativas com localização — compartilhe o mapa público com clientes."
         actions={
-          <Button variant="secondary" onClick={copyPublicLink} disabled={!mapToken.isSuccess}>
+          <Button data-tour="copy-map-link" variant="secondary" onClick={copyPublicLink} disabled={!mapToken.isSuccess}>
             <Copy aria-hidden className="h-4 w-4" /> Copiar link público
           </Button>
         }
@@ -85,10 +85,14 @@ export default function InternalMapPage() {
           description="Cadastre latitude/longitude via scripts/create-branch.ts para aparecer no mapa."
         />
       )}
-      {branches.isSuccess && mapBranches.length > 0 && <BranchesMap branches={mapBranches} />}
+      {branches.isSuccess && mapBranches.length > 0 && (
+        <div data-tour="map-area">
+          <BranchesMap branches={mapBranches} />
+        </div>
+      )}
 
       {branches.isSuccess && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3" data-tour="branch-cards">
           {branches.data.map((branch) => (
             <Card key={branch.id} className="p-4 text-sm">
               <p className="flex items-center gap-1.5 font-medium text-text">

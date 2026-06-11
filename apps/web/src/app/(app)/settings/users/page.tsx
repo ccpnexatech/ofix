@@ -119,6 +119,7 @@ export default function UsersSettingsPage() {
         description="Equipe do tenant — papéis e escopo de filial (RN-12)."
         actions={
           <Button
+            data-tour="new-user"
             onClick={() => {
               setCreateOpen(true);
             }}
@@ -145,7 +146,7 @@ export default function UsersSettingsPage() {
         />
       )}
       {users.isSuccess && (
-        <Table>
+        <Table data-tour="users-table">
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead>
