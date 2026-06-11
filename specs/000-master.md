@@ -22,7 +22,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 | 009 | Tour guiado (onboarding por tela) | ✅ concluída (Fases 8-9) |
 | 010 | Assistente de IA (chat + insights do dashboard) | — |
 | 011 | Entrega: CI, deploy, seed, git e scripts expostos | 🔶 parcial — CI feito na Fase 0 |
-| 012 | Documentação de uso da ferramenta (última spec) | — |
+| 012 | Documentação de uso da ferramenta (última spec) | ✅ concluída (Fase 10) |
 
 ## Fases de execução
 
@@ -38,7 +38,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 - [x] **Fase 7 — Dashboard, filiais e mapa:** métricas consolidadas/por filial, seletor de filial, mapa interno e mapa público compartilhável. (Specs 005, 006) — PR #8
 - [x] **Fase 8 — Tour guiado:** engine própria + fluxos de tour em todas as telas. (Spec 009) — PR #9
 - [x] **Fase 9 — E2E e hardening:** Playwright nos fluxos críticos, rate limit nas rotas públicas, headers de segurança, snapshots de tela. (Spec 008) — PR #11
-- [ ] **Fase 10 — Documentação de uso:** guia completo do usuário com os snapshots gerados na Fase 9. (Spec 012)
+- [x] **Fase 10 — Documentação de uso:** guia completo do usuário com os snapshots gerados na Fase 9. (Spec 012) — PR #12
 - [ ] **Fase 11 — Assistente de IA:** chat flutuante com contexto dos docs + tools, e card de insights no dashboard. (Spec 010)
 - [ ] **Fase 12 — Entrega final:** deploy completo, seed demo rico, README com gif e credenciais, revisão geral. (Spec 011)
 

@@ -37,8 +37,8 @@ Estrutura obrigatória (cada seção com screenshot real de `docs/assets/screens
 
 ## Definition of Done (Fase 10)
 
-- [ ] `docs/user-guide.md` completo com as 11 seções e screenshots reais nos pontos definidos.
-- [ ] FAQ com ≥ 10 entradas e glossário completo.
-- [ ] `docs/README.md` (índice) criado; flows/scripts/database/api revisados.
-- [ ] Contexto da Fia regenerado e CI de verificação passando.
-- [ ] Leitura completa de revisão (typos, links quebrados — checar com lychee ou similar).
+- [x] `docs/user-guide.md` completo com as 11 seções e screenshots reais nos pontos definidos.
+- [x] FAQ com ≥ 10 entradas e glossário completo. — 12 perguntas + glossário com os 9 status
+- [x] `docs/README.md` (índice) criado; flows/scripts/database/api revisados. — flows.md novo com 3 diagramas
+- [x] Contexto da Fia regenerado e CI de verificação passando. — `pnpm assistant:context[:check]`
+- [x] Leitura completa de revisão (typos, links quebrados — checar com lychee ou similar). — checker próprio: 19 arquivos, zero quebrados
