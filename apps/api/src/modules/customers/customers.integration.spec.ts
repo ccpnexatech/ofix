@@ -8,6 +8,7 @@ import { createTestApp } from '../../../test/app';
 import {
   createBranch,
   createCustomer,
+  createEquipment,
   createOrder,
   createTenant,
   createUser,
@@ -123,6 +124,18 @@ describe('customers & equipments (integration)', () => {
     });
     expect(updated.status).toBe(200);
     expect(updated.body).toMatchObject({ notes: 'Tela trincada na entrada' });
+  });
+
+  it('RN-11: tenant B cannot update an equipment of tenant A (404)', async () => {
+    const customer = await createCustomer(tenantId);
+    const equipment = await createEquipment(tenantId, customer.id);
+    const otherTenant = await createTenant();
+    const intruder = await createUser({ tenantId: otherTenant.id });
+
+    const response = await asUser(app, intruder).patch(`/equipments/${equipment.id}`, {
+      notes: 'invasão',
+    });
+    expect(response.status).toBe(404);
   });
 
   it('RN-12: customer order history is branch-scoped for fixed-branch users', async () => {
