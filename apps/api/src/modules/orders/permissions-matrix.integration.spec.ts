@@ -138,7 +138,14 @@ describe('permission matrix (spec 004, tabular)', () => {
         );
         status = response.status;
       } else if (scenario === 'manage-users') {
-        const response = await asUser(app, actor).get('/users');
+        // Management = create/update (listing is also open to ATTENDANT for
+        // the assign-technician flow).
+        const response = await asUser(app, actor).post('/users', {
+          name: 'Matriz User',
+          email: `matriz-${actor.id.slice(0, 8)}@test.dev`,
+          password: 'senha-segura-1',
+          role: Role.ATTENDANT,
+        });
         status = response.status;
       } else {
         const action = scenario.split(':')[1] as OrderAction;

@@ -1,4 +1,4 @@
-import { OrderStatus, QuoteStatus } from './enums';
+import { OrderStatus, QuoteStatus, Role } from './enums';
 
 // Pure state machine of the service order (spec 004). API and web consume the
 // SAME functions: the API to validate transitions, the web to decide which
@@ -125,6 +125,35 @@ export function canTransition(
   }
   const failed = PRECONDITIONS[action]?.(ctx);
   return failed ?? { ok: true, nextStatus: to };
+}
+
+/** Actions a technician may execute, restricted to orders assigned to them. */
+const TECHNICIAN_ACTIONS: ReadonlySet<OrderAction> = new Set([
+  OrderAction.START_DIAGNOSIS,
+  OrderAction.SEND_QUOTE,
+  OrderAction.START_REPAIR,
+  OrderAction.MARK_READY,
+]);
+
+export interface ActionActor {
+  role: Role;
+  /** Whether the actor is the technician assigned to THIS order. */
+  isAssignedTechnician: boolean;
+}
+
+/**
+ * Permission matrix for transitions (spec 004) — single source for the API
+ * guard and for which buttons the web renders (spec 006).
+ */
+export function canRoleExecuteAction(actor: ActionActor, action: OrderAction): boolean {
+  if (actor.role === Role.ADMIN) {
+    return true;
+  }
+  if (actor.role === Role.TECHNICIAN) {
+    return TECHNICIAN_ACTIONS.has(action) && actor.isAssignedTechnician;
+  }
+  // ATTENDANT: only DELIVER goes through the transition endpoint.
+  return action === OrderAction.DELIVER;
 }
 
 export interface WarrantyReopenContext {
