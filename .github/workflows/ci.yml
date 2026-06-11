@@ -51,6 +51,9 @@ jobs:
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level high
 
+      - name: Verify assistant context is up to date
+        run: pnpm assistant:context:check
+
       - name: Lint
         run: pnpm lint
 
