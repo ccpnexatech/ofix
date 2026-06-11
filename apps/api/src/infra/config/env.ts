@@ -9,6 +9,10 @@ const envSchema = z.object({
   // 32+ chars: HS256 secret must not be guessable (ADR-008).
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must have at least 32 characters'),
   CORS_ORIGIN: z.url().default('http://localhost:3000'),
+  // Fia assistant (spec 010): optional — without a key the endpoints answer
+  // a friendly 503 instead of blocking the whole API boot.
+  ANTHROPIC_API_KEY: z.string().min(20).optional(),
+  ASSISTANT_MODEL: z.string().default('claude-sonnet-4-20250514'),
   // Escape hatch for integration tests that hammer endpoints; never set in prod.
   THROTTLE_DISABLED: z
     .enum(['true', 'false'])

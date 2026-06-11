@@ -2,6 +2,7 @@ export * from './constants';
 export * from './enums';
 export * from './order-state-machine';
 export * from './quote-totals';
+export * from './schemas/assistant';
 export * from './schemas/auth';
 export * from './schemas/branches';
 export * from './schemas/customers';

@@ -22,6 +22,7 @@ import {
   ToastProvider,
 } from '../../design-system';
 import { BranchSelector } from '../../features/dashboard/branch-selector';
+import { FiaPanel } from '../../features/assistant/fia-panel';
 import { TourLauncher } from '../../features/tour/tour-launcher';
 import { TourProvider } from '../../features/tour/tour-provider';
 import { AuthProvider, useAuth } from '../../lib/auth';
@@ -158,6 +159,7 @@ function AppChrome({ children }: { children: ReactNode }) {
         </header>
         <main className="flex-1 p-4 lg:p-6">{children}</main>
         <TourLauncher />
+        <FiaPanel />
       </div>
     </div>
   );

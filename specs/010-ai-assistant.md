@@ -31,9 +31,9 @@ Balão flutuante (canto inferior direito, todas as telas autenticadas) abre um p
 
 ## Definition of Done (Fase 11)
 
-- [ ] Chat com streaming SSE funcionando ponta a ponta com as 5 tools (testes de integração das tools com tenant isolation; chamada ao modelo mockada nos testes).
-- [ ] Script de contexto + verificação de atualização no CI.
-- [ ] Card de insights com cache e os 3 estados de UI.
-- [ ] Rate limit e janela de mensagens testados.
-- [ ] ADR-011 escrito; `docs/assistant.md` documentando arquitetura, prompt e tools.
-- [ ] Demonstração no README (gif do chat respondendo com dado real do seed).
+- [x] Chat com streaming SSE funcionando ponta a ponta com as 5 tools (testes de integração das tools com tenant isolation; chamada ao modelo mockada nos testes). — `assistant.integration.spec.ts`, 7 testes
+- [x] Script de contexto + verificação de atualização no CI. — Fase 10 (`pnpm assistant:context[:check]`)
+- [x] Card de insights com cache e os 3 estados de UI. — cache 15min testado; card com testes de componente
+- [x] Rate limit e janela de mensagens testados. — 429 antes do stream; janela de 10 verificada no fake
+- [x] ADR-011 escrito; `docs/assistant.md` documentando arquitetura, prompt e tools.
+- [ ] Demonstração no README (gif do chat respondendo com dado real do seed). — entra com o README na Fase 12 (gravação com chave real)

@@ -331,6 +331,20 @@ curl localhost:3001/api/v1/public/map/$MAP_TOKEN
 }
 ```
 
-## A implementar nas próximas fases
+## Assistente (Fia)
 
-- **Assistente** (`/assistant/*`) — Fase 11.
+| Rota | Roles | Notas |
+|---|---|---|
+| `POST /assistant/chat` | todas | **SSE** (`data: {"type":"text"\|"tool"\|"done"\|"error"}`); janela de 10 mensagens; 10 req/min/usuário (429); sem `ANTHROPIC_API_KEY` → 503 amigável |
+| `POST /assistant/dashboard-insights` | todas | 3–5 insights em JSON estrito; cache 15 min por tenant+filtro; falha de parse → retry → 503 |
+
+```bash
+curl -N localhost:3001/api/v1/assistant/chat -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"messages":[{"role":"user","content":"quais OS estão atrasadas?"}]}'
+# data: {"type":"tool","name":"get_overdue_orders"}
+# data: {"type":"text","delta":"Você tem 1 OS atrasada: OS-2026-0042..."}
+# data: {"type":"done"}
+```
+
+Arquitetura, prompt e tools: [assistant.md](assistant.md).
