@@ -4,6 +4,7 @@ import { publicRejectBodySchema, type PublicRejectBody } from '@ofix/shared';
 
 import { Public } from '../../common/decorators/public.decorator';
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
+import { PublicMapService } from './public-map.service';
 import { PublicQuotesService } from './public-quotes.service';
 
 // Spec 003: /public/* is rate limited at 20 req/min/IP.
@@ -31,5 +32,18 @@ export class PublicQuotesController {
     @Body(new ZodValidationPipe(publicRejectBodySchema)) body: PublicRejectBody,
   ) {
     return this.publicQuotes.reject(token, body.reason);
+  }
+}
+
+@Public()
+@Throttle({ default: { limit: 20, ttl: 60_000 } })
+@Controller('public/map')
+export class PublicMapController {
+  constructor(private readonly publicMap: PublicMapService) {}
+
+  /** RN-15: shareable branches map. */
+  @Get(':mapToken')
+  async view(@Param('mapToken') mapToken: string) {
+    return this.publicMap.view(mapToken);
   }
 }

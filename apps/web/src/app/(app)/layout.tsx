@@ -1,10 +1,10 @@
 'use client';
 
 import { Role } from '@ofix/shared';
-import { Bell, ClipboardList, LogOut, Search, Settings, Users } from 'lucide-react';
+import { Bell, ClipboardList, LayoutDashboard, LogOut, MapPin, Search, Settings, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, type ReactNode } from 'react';
+import { Suspense, useEffect, type ReactNode } from 'react';
 
 import {
   Button,
@@ -21,6 +21,7 @@ import {
   ThemeToggle,
   ToastProvider,
 } from '../../design-system';
+import { BranchSelector } from '../../features/dashboard/branch-selector';
 import { AuthProvider, useAuth } from '../../lib/auth';
 import { QueryProvider } from '../../lib/query';
 
@@ -58,6 +59,13 @@ function AppChrome({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-surface">
       <Sidebar className="sticky top-0 h-screen shrink-0 max-lg:hidden">
         <SidebarItem
+          icon={<LayoutDashboard />}
+          label="Dashboard"
+          href="/dashboard"
+          linkComponent={Link}
+          active={pathname.startsWith('/dashboard')}
+        />
+        <SidebarItem
           icon={<ClipboardList />}
           label="Ordens de serviço"
           href="/orders"
@@ -70,6 +78,13 @@ function AppChrome({ children }: { children: ReactNode }) {
           href="/customers"
           linkComponent={Link}
           active={pathname.startsWith('/customers')}
+        />
+        <SidebarItem
+          icon={<MapPin />}
+          label="Filiais"
+          href="/branches/map"
+          linkComponent={Link}
+          active={pathname.startsWith('/branches')}
         />
         {user.role === Role.ADMIN && (
           <SidebarItem
@@ -108,6 +123,9 @@ function AppChrome({ children }: { children: ReactNode }) {
             />
           </form>
           <div className="ml-auto flex items-center gap-2">
+            <Suspense fallback={null}>
+              <BranchSelector />
+            </Suspense>
             <ThemeToggle data-tour="theme-toggle" />
             <Button variant="ghost" size="sm" aria-label="Notificações" disabled>
               <Bell className="h-4 w-4" />

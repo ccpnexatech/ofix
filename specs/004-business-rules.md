@@ -54,7 +54,7 @@ Implementação: função pura em `packages/shared/src/order-state-machine.ts` �
 ## Definition of Done (verificado nas Fases 3 e 4)
 
 - [x] Máquina de estados pura no shared com 100% de cobertura de transições (válidas e inválidas). — Fase 3: `order-state-machine.spec.ts` (produto cartesiano completo)
-- [ ] RN-01..RN-15 com testes nomeados pelo código da regra. — Fases 3-4: RN-01..13 ✓ (RN-04 público e RN-05 na Fase 4); faltam RN-14/15 (Fase 7)
+- [x] RN-01..RN-15 com testes nomeados pelo código da regra. — Fases 3-4 (RN-01..13) e 7 (RN-14/15) ✓
 - [x] Matriz de permissões testada de forma tabular (test.each). — Fase 3: `permissions-matrix.integration.spec.ts` (31 linhas)
 - [x] `docs/business-rules.md` escrito com diagrama Mermaid da máquina de estados. — Fase 3
 - [x] ADR-004 (auditoria append-only), ADR-005 (aprovação pública por token), ADR-006 (endpoint único de transições) escritos. — Fases 3 (004, 006) e 4 (005)

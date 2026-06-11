@@ -14,4 +14,11 @@ export class BranchesController {
   async list(): Promise<ListBranchesResponse> {
     return this.branchesService.list();
   }
+
+  /** Token of the shareable public map — feeds the "copy public link" button. */
+  @Roles(Role.ADMIN, Role.TECHNICIAN, Role.ATTENDANT)
+  @Get('map-token')
+  async mapToken(): Promise<{ publicMapToken: string }> {
+    return this.branchesService.mapToken();
+  }
 }

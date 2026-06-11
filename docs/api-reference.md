@@ -193,7 +193,7 @@ garantia → `422` com `details.code = "RN-07"` e a data limite na mensagem.
 
 | Rota | Notas |
 |---|---|
-| `GET /users?search=&page=` | nunca expõe `passwordHash` |
+| `GET /users?search=&page=` | ADMIN e ATTENDANT (fluxo de atribuição); nunca expõe `passwordHash` |
 | `POST /users` | e-mail duplicado no tenant → 409; filial inválida → 422 |
 | `PATCH /users/:id` | nome, role, branchId, isActive |
 
@@ -274,7 +274,63 @@ A decisão pública executa a mesma máquina de transições da API autenticada 
 grava o evento com `actorType: CUSTOMER` e `metadata.method: "public_token"`
 (ADR-005).
 
+## Dashboard
+
+| Rota | Roles | Notas |
+|---|---|---|
+| `GET /dashboard/summary?branchId=&from=&to=` | todas* | RN-14: tenant inteiro por padrão; filial fixa → travado na própria (403 em alheia); TECHNICIAN vê só as suas OS |
+| `GET /dashboard/orders-by-status?branchId=` | todas* | contagem por status (alimenta o donut) |
+| `GET /dashboard/revenue-by-month?months=6&branchId=` | todas* | receita = quotes APPROVED de OS DELIVERED no mês (por `deliveredAt`) |
+| `GET /dashboard/branches-comparison` | ADMIN | comparativo por filial (mês atual) |
+
+```bash
+curl localhost:3001/api/v1/dashboard/summary -H "Authorization: Bearer $TOKEN"
+```
+
+```json
+{
+  "openOrders": 4,
+  "overdueOrders": 1,
+  "revenueCents": 0,
+  "avgTicketCents": 0,
+  "quoteApprovalRate": 1,
+  "avgRepairTimeHours": null,
+  "deliveredCount": 0
+}
+```
+
+```bash
+curl 'localhost:3001/api/v1/dashboard/revenue-by-month?months=6' -H "Authorization: Bearer $TOKEN"
+# → [{ "month": "2026-01", "revenueCents": 42000, "deliveredCount": 1 }, ...]
+```
+
+### GET /public/map/:mapToken — público, 20 req/min/IP (RN-15)
+
+Somente filiais ativas com coordenadas; payload fechado (nunca OS, clientes ou
+usuários). Token rotacionável via `scripts/rotate-map-token.ts` — o link antigo
+morre na hora (404 genérico).
+
+```bash
+curl localhost:3001/api/v1/public/map/$MAP_TOKEN
+```
+
+```json
+{
+  "tenantName": "TecNorte Assistência",
+  "branches": [
+    {
+      "name": "Matriz Fortaleza",
+      "address": "Av. Bezerra de Menezes, 100 — São Gerardo",
+      "city": "Fortaleza",
+      "state": "CE",
+      "phone": "(85) 3222-1000",
+      "lat": -3.731862,
+      "lng": -38.52667
+    }
+  ]
+}
+```
+
 ## A implementar nas próximas fases
 
-- **`GET /public/map/:mapToken`** e **Dashboard** (`/dashboard/*`) — Fase 7.
 - **Assistente** (`/assistant/*`) — Fase 11.

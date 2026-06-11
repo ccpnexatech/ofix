@@ -24,7 +24,7 @@ export default function LoginPage() {
   // Already signed in (e.g. back button): straight to the app.
   useEffect(() => {
     if (status === 'authenticated') {
-      router.replace('/orders');
+      router.replace('/dashboard');
     }
   }, [status, router]);
 
@@ -32,7 +32,7 @@ export default function LoginPage() {
     setFormError(undefined);
     try {
       await login(body);
-      router.replace('/orders');
+      router.replace('/dashboard');
     } catch (error) {
       if (error instanceof ApiError) {
         const code = (error.details as { code?: string } | undefined)?.code;

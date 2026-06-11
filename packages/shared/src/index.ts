@@ -5,6 +5,7 @@ export * from './quote-totals';
 export * from './schemas/auth';
 export * from './schemas/branches';
 export * from './schemas/customers';
+export * from './schemas/dashboard';
 export * from './schemas/health';
 export * from './schemas/orders';
 export * from './schemas/pagination';
