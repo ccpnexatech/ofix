@@ -1,0 +1,200 @@
+@import 'tailwindcss';
+
+/*
+ * OFIX design tokens (spec 007). Identity: "oficina moderna" — burnt amber
+ * over warm neutrals. Components NEVER reference raw colors: they consume the
+ * semantic tokens below, which switch with [data-theme] without re-render.
+ * Contrast of every text/surface pair is asserted by design-tokens.spec.ts.
+ */
+
+:root {
+  /* Surfaces & text — light theme (warm, stone-like) */
+  --surface: #faf9f7;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f0eeea;
+  --border: #e5e1db;
+  --border-strong: #c9c3ba;
+  --text: #292524;
+  --text-muted: #57534e;
+  --text-faint: #6d655d;
+  --text-on-brand: #451f04;
+
+  /* Semantic */
+  --success: #166534;
+  --success-bg: #e3f5e8;
+  --warning: #854d0e;
+  --warning-bg: #fcf4dc;
+  --danger: #b91c1c;
+  --danger-bg: #fceaea;
+  --info: #1d4ed8;
+  --info-bg: #e7eefd;
+
+  /* OS status — one token per status (badges + dashboard donut) */
+  --status-received: #1d4ed8;
+  --status-received-bg: #e7eefd;
+  --status-in-diagnosis: #7c3aed;
+  --status-in-diagnosis-bg: #f1eafd;
+  --status-quote-sent: #92490e;
+  --status-quote-sent-bg: #fcefd7;
+  --status-approved: #0f766e;
+  --status-approved-bg: #ddf3f0;
+  --status-rejected: #be123c;
+  --status-rejected-bg: #fce7ec;
+  --status-in-repair: #9a3412;
+  --status-in-repair-bg: #fdeadd;
+  --status-ready: #166534;
+  --status-ready-bg: #e3f5e8;
+  --status-delivered: #166534;
+  --status-delivered-bg: #e1f2e5;
+  --status-canceled: #57534e;
+  --status-canceled-bg: #edebe7;
+
+  /* Soft warm shadows — never pure black */
+  --shadow-sm: 0 1px 2px rgb(41 37 36 / 0.06);
+  --shadow-md: 0 2px 8px -2px rgb(41 37 36 / 0.12);
+  --shadow-lg: 0 8px 24px -4px rgb(41 37 36 / 0.16);
+}
+
+[data-theme='dark'] {
+  --surface: #1c1917;
+  --surface-raised: #292524;
+  --surface-sunken: #141211;
+  --border: #3b362f;
+  --border-strong: #57534e;
+  --text: #f5f4f2;
+  --text-muted: #c7c1ba;
+  --text-faint: #a39d94;
+  --text-on-brand: #451f04;
+
+  --success: #5fd38a;
+  --success-bg: #12331d;
+  --warning: #e3b341;
+  --warning-bg: #3a2c0a;
+  --danger: #f28b82;
+  --danger-bg: #3d1513;
+  --info: #8ab4f8;
+  --info-bg: #16263e;
+
+  --status-received: #8ab4f8;
+  --status-received-bg: #16263e;
+  --status-in-diagnosis: #c4a5f7;
+  --status-in-diagnosis-bg: #2a1d44;
+  --status-quote-sent: #f7c373;
+  --status-quote-sent-bg: #3a2708;
+  --status-approved: #7fd6cc;
+  --status-approved-bg: #0e2f2c;
+  --status-rejected: #f49baf;
+  --status-rejected-bg: #3e111d;
+  --status-in-repair: #f3a16f;
+  --status-in-repair-bg: #3a1c0a;
+  --status-ready: #5fd38a;
+  --status-ready-bg: #12331d;
+  --status-delivered: #8fd9a5;
+  --status-delivered-bg: #11301b;
+  --status-canceled: #a39d94;
+  --status-canceled-bg: #2b2723;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 2px 8px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 8px 24px -4px rgb(0 0 0 / 0.55);
+}
+
+/* Static scales available as Tailwind utilities (bg-brand-500 etc.) */
+@theme {
+  --color-brand-50: #fff8eb;
+  --color-brand-100: #feefd0;
+  --color-brand-200: #fcdd9f;
+  --color-brand-300: #fac465;
+  --color-brand-400: #f7a937;
+  --color-brand-500: #f59e0b;
+  --color-brand-600: #d97f06;
+  --color-brand-700: #b45f08;
+  --color-brand-800: #92490e;
+  --color-brand-900: #783c0f;
+  --color-brand-950: #451f04;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, 'SF Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.875rem; /* 14 — base */
+  --text-base: 1rem; /* 16 */
+  --text-lg: 1.125rem; /* 18 */
+  --text-xl: 1.5rem; /* 24 */
+  --text-2xl: 1.875rem; /* 30 */
+  --text-3xl: 2.375rem; /* 38 */
+}
+
+/* Runtime-switching semantic tokens mapped into Tailwind utilities */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-text-on-brand: var(--text-on-brand);
+
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+
+  --color-status-received: var(--status-received);
+  --color-status-received-bg: var(--status-received-bg);
+  --color-status-in-diagnosis: var(--status-in-diagnosis);
+  --color-status-in-diagnosis-bg: var(--status-in-diagnosis-bg);
+  --color-status-quote-sent: var(--status-quote-sent);
+  --color-status-quote-sent-bg: var(--status-quote-sent-bg);
+  --color-status-approved: var(--status-approved);
+  --color-status-approved-bg: var(--status-approved-bg);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-rejected-bg: var(--status-rejected-bg);
+  --color-status-in-repair: var(--status-in-repair);
+  --color-status-in-repair-bg: var(--status-in-repair-bg);
+  --color-status-ready: var(--status-ready);
+  --color-status-ready-bg: var(--status-ready-bg);
+  --color-status-delivered: var(--status-delivered);
+  --color-status-delivered-bg: var(--status-delivered-bg);
+  --color-status-canceled: var(--status-canceled);
+  --color-status-canceled-bg: var(--status-canceled-bg);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+}
+
+body {
+  background-color: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  font-feature-settings:
+    'cv11',
+    'ss01';
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+}
+
+/* Numbers are ALWAYS tabular (tables, money, metrics) — spec 007 */
+table,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+}

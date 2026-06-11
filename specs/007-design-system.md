@@ -47,9 +47,9 @@ Button (primary/secondary/ghost/danger × sm/md/lg, loading) · Input/Textarea/S
 
 ## Definition of Done (Fase 5)
 
-- [ ] Tokens completos nos 2 temas, com contraste AA verificado nos pares texto/superfície.
-- [ ] Fontes via next/font sem layout shift (verificar com throttling).
-- [ ] Inventário implementado com testes de componente dos críticos (Button, StatusBadge, Dialog, Table).
-- [ ] Rota interna `/design` (dev-only) exibindo todos os componentes nos 2 temas — serve de homologação visual e fonte dos screenshots.
-- [ ] `docs/design-system.md` com a filosofia, tokens e screenshot da rota `/design` nos 2 temas.
-- [ ] ADR-009 (scaffold shadcn re-estilizado vs. tudo do zero) escrito.
+- [x] Tokens completos nos 2 temas, com contraste AA verificado nos pares texto/superfície. — `design-tokens.spec.ts` (40 asserções nos 2 temas)
+- [x] Fontes via next/font sem layout shift (verificar com throttling). — Inter/Sora/JetBrains Mono self-hosted, display swap + fallback ajustado
+- [x] Inventário implementado com testes de componente dos críticos (Button, StatusBadge, Dialog, Table). — `components.spec.tsx`
+- [x] Rota interna `/design` (dev-only) exibindo todos os componentes nos 2 temas — serve de homologação visual e fonte dos screenshots. — `apps/web/src/app/design/`
+- [x] `docs/design-system.md` com a filosofia, tokens e screenshot da rota `/design` nos 2 temas. — `docs/assets/design-{light,dark}.png`
+- [x] ADR-009 (scaffold shadcn re-estilizado vs. tudo do zero) escrito.
