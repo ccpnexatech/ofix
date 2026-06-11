@@ -105,7 +105,7 @@ export class AssistantToolsService {
       switch (name) {
         case 'get_order_by_code': {
           const order = await this.prisma.client.serviceOrder.findFirst({
-            where: { ...this.scope(user), code: str(input.code).toUpperCase() },
+            where: { ...this.scope(user), code: { equals: str(input.code), mode: 'insensitive' } },
             include: ORDER_LIST_INCLUDE,
           });
           return order

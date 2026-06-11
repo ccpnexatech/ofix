@@ -15,16 +15,32 @@ export interface ModelCallParams {
 }
 
 /**
- * Thin injectable wrapper around the Anthropic SDK so tests can replace the
- * model entirely (DoD: model calls mocked in tests). The key never leaves the
- * server; without one the assistant is simply unavailable (503 upstream).
+ * Injection token/contract of the assistant model. Two providers (ADR-012):
+ * LocalAssistantModel (deterministic, default) and AnthropicModelClient
+ * (spec 010 path, ASSISTANT_MODE=anthropic). Tests inject scripted fakes.
  */
 @Injectable()
-export class AssistantModelClient {
+export abstract class AssistantModelClient {
+  abstract available(): boolean;
+
+  /** Streams one model turn; resolves with the final message (incl. tool_use). */
+  abstract stream(
+    params: ModelCallParams,
+    handlers: ModelStreamHandlers,
+  ): Promise<Anthropic.Message>;
+
+  /** Single non-streaming call (insights). */
+  abstract complete(params: ModelCallParams): Promise<Anthropic.Message>;
+}
+
+/** Spec 010 provider: the real Anthropic API. The key never leaves the server. */
+@Injectable()
+export class AnthropicModelClient extends AssistantModelClient {
   private client: Anthropic | undefined;
   private model = 'claude-sonnet-4-20250514';
 
   constructor() {
+    super();
     const env = loadEnv();
     this.model = env.ASSISTANT_MODEL;
     if (env.ANTHROPIC_API_KEY !== undefined) {
@@ -36,7 +52,6 @@ export class AssistantModelClient {
     return this.client !== undefined;
   }
 
-  /** Streams one model turn; resolves with the final message (incl. tool_use). */
   async stream(params: ModelCallParams, handlers: ModelStreamHandlers): Promise<Anthropic.Message> {
     if (!this.client) {
       throw new Error('assistant model not configured');
@@ -54,7 +69,6 @@ export class AssistantModelClient {
     return stream.finalMessage();
   }
 
-  /** Single non-streaming call (insights). */
   async complete(params: ModelCallParams): Promise<Anthropic.Message> {
     if (!this.client) {
       throw new Error('assistant model not configured');
