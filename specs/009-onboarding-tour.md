@@ -47,5 +47,5 @@ Textos em pt-BR, tom direto e curto (máx. 2 frases por passo), escritos junto c
 - [x] Engine própria com spotlight + popover + teclado + persistência no banco. — `features/tour/` + `PATCH /users/me/tours`
 - [x] 7 tours definidos e funcionando; `data-tour` presente em todos os alvos. — `features/tour/tours/index.ts`
 - [x] Auto-start no primeiro acesso + reabertura manual pelo `?`. — validado no navegador (skip persiste após reload)
-- [ ] Teste de componente da engine (navegação, skip, alvo ausente) + E2E nº 6 cobrindo o ciclo completo. — engine ✓ (`tour.spec.tsx`, 5 testes); E2E nº 6 entra com a suíte Playwright (Fase 9)
+- [x] Teste de componente da engine (navegação, skip, alvo ausente) + E2E nº 6 cobrindo o ciclo completo. — engine (`tour.spec.tsx`) + `e2e/06-theme-tour.spec.ts`
 - [x] ADR-010 escrito.

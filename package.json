@@ -19,9 +19,13 @@
     "db:migrate": "pnpm --filter @ofix/api db:migrate",
     "db:studio": "pnpm --filter @ofix/api db:studio",
     "db:erd": "pnpm --filter @ofix/api db:erd",
-    "db:seed": "tsx scripts/seed-demo.ts"
+    "db:seed": "tsx scripts/seed-demo.ts",
+    "test:e2e": "playwright test --project=desktop --project=mobile",
+    "shots": "playwright test --project=shots",
+    "test:coverage": "turbo run test -- --coverage"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "prettier": "^3.5.3",
     "tsx": "^4.20.3",
     "turbo": "^2.5.4"

@@ -101,6 +101,17 @@ describe('users (integration, ADMIN-only)', () => {
     expect(invalid.status).toBe(400);
   });
 
+  it('RN-11: an admin of tenant B cannot update a user of tenant A (404)', async () => {
+    const target = await createUser({ tenantId });
+    const otherTenant = await createTenant();
+    const intruder = await createUser({ tenantId: otherTenant.id, role: Role.ADMIN });
+
+    const response = await asUser(app, intruder).patch(`/users/${target.id}`, {
+      isActive: false,
+    });
+    expect(response.status).toBe(404);
+  });
+
   it('RN-11: listing only shows users of the requesting tenant', async () => {
     const otherTenant = await createTenant();
     const foreign = await createUser({ tenantId: otherTenant.id });

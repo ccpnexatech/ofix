@@ -1,10 +1,9 @@
 import type { INestApplication, ModuleMetadata } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { API_PREFIX } from '@ofix/shared';
-import cookieParser from 'cookie-parser';
 import type { App } from 'supertest/types';
 
 import { AppModule } from '../src/app.module';
+import { configureApp } from '../src/app.setup';
 import { testDatabaseUrl } from './database';
 
 export interface CreateTestAppOptions {
@@ -28,8 +27,8 @@ export async function createTestApp(
   }).compile();
 
   const app = moduleRef.createNestApplication<INestApplication<App>>();
-  app.use(cookieParser());
-  app.setGlobalPrefix(API_PREFIX);
+  // Same middleware as production (main.ts) — hardening tests assert it.
+  configureApp(app, 'http://localhost:3000');
   // Listen on an ephemeral port: concurrent supertest requests against a
   // non-listening server race on listen() and reset connections.
   await app.listen(0);
