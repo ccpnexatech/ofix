@@ -38,8 +38,8 @@ Os testes E2E capturam screenshots nomeadas em pontos-chave (`screenshots/{fluxo
 
 ## Definition of Done (Fase 9)
 
-- [ ] 6 fluxos E2E verdes local e no CI.
-- [ ] `expectTenantIsolation` aplicado a 100% dos endpoints autenticados.
-- [ ] Hardening: rate limit testado, headers de segurança (helmet) verificados por teste, dependências auditadas (`pnpm audit`).
-- [ ] `pnpm shots` gerando o pacote completo de screenshots nos 2 temas.
-- [ ] Relatório de cobertura publicado como artifact do CI.
+- [x] 6 fluxos E2E verdes local e no CI. — `e2e/*.spec.ts`, job Playwright no CI
+- [x] `expectTenantIsolation` aplicado a 100% dos endpoints autenticados. — helper + testes cross-tenant dedicados em todos os recursos
+- [x] Hardening: rate limit testado, headers de segurança (helmet) verificados por teste, dependências auditadas (`pnpm audit`). — `security-headers.integration.spec.ts`; audit gate high no CI (1 moderate aceito e documentado)
+- [x] `pnpm shots` gerando o pacote completo de screenshots nos 2 temas. — `docs/assets/screens/`
+- [x] Relatório de cobertura publicado como artifact do CI. — `pnpm test:coverage` + upload-artifact
