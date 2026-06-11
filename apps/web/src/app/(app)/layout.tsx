@@ -22,6 +22,8 @@ import {
   ToastProvider,
 } from '../../design-system';
 import { BranchSelector } from '../../features/dashboard/branch-selector';
+import { TourLauncher } from '../../features/tour/tour-launcher';
+import { TourProvider } from '../../features/tour/tour-provider';
 import { AuthProvider, useAuth } from '../../lib/auth';
 import { QueryProvider } from '../../lib/query';
 
@@ -155,6 +157,7 @@ function AppChrome({ children }: { children: ReactNode }) {
           </div>
         </header>
         <main className="flex-1 p-4 lg:p-6">{children}</main>
+        <TourLauncher />
       </div>
     </div>
   );
@@ -165,7 +168,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     <QueryProvider>
       <AuthProvider>
         <ToastProvider>
-          <AppChrome>{children}</AppChrome>
+          <TourProvider>
+            <AppChrome>{children}</AppChrome>
+          </TourProvider>
         </ToastProvider>
       </AuthProvider>
     </QueryProvider>

@@ -28,3 +28,14 @@ export const listUsersQuerySchema = paginationQuerySchema.extend({
   search: z.string().trim().min(1).optional(),
 });
 export type ListUsersQuery = z.infer<typeof listUsersQuerySchema>;
+
+/** PATCH /users/me/tours (spec 009): records a completed/skipped tour. */
+export const completeTourBodySchema = z.object({
+  tourId: z
+    .string()
+    .trim()
+    .min(1)
+    .max(50)
+    .regex(/^[a-z0-9-]+$/, 'tourId inválido'),
+});
+export type CompleteTourBody = z.infer<typeof completeTourBodySchema>;

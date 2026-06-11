@@ -91,6 +91,27 @@ export class UsersService {
     });
   }
 
+  /**
+   * Spec 009: records a completed/skipped tour. Idempotent — recording the
+   * same tour twice keeps a single entry. Persisted in the database so it
+   * survives device changes.
+   */
+  async completeTour(userId: string, tourId: string): Promise<{ completedTours: string[] }> {
+    const user = await this.prisma.client.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { completedTours: true },
+    });
+    if (user.completedTours.includes(tourId)) {
+      return { completedTours: user.completedTours };
+    }
+    const updated = await this.prisma.client.user.update({
+      where: { id: userId },
+      data: { completedTours: [...user.completedTours, tourId] },
+      select: { completedTours: true },
+    });
+    return updated;
+  }
+
   private async assertBranchValid(branchId: string | null): Promise<void> {
     if (branchId === null) {
       return; // null = access to every branch of the tenant

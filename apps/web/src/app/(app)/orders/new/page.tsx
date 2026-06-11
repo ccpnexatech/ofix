@@ -220,7 +220,7 @@ export default function NewOrderWizard() {
       <Stepper current={step} />
 
       {step === 0 && (
-        <Card>
+        <Card data-tour="wizard-card">
           <CardHeader>
             <CardTitle>Quem é o cliente?</CardTitle>
           </CardHeader>

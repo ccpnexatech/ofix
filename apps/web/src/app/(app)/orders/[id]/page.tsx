@@ -543,7 +543,7 @@ export default function OrderDetailPage() {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]" data-tour="order-detail">
       <div className="flex flex-col gap-4">
-        <header className="flex flex-wrap items-center gap-3">
+        <header data-tour="order-header" className="flex flex-wrap items-center gap-3">
           <h1 className="font-mono text-xl font-semibold text-text">{data.code}</h1>
           <StatusBadge status={data.status} />
           <PriorityBadge priority={data.priority} />

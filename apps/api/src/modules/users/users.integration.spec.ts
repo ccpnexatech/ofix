@@ -76,6 +76,31 @@ describe('users (integration, ADMIN-only)', () => {
     expect(missing.status).toBe(404);
   });
 
+  it('PATCH /users/me/tours records tours idempotently for any role (spec 009)', async () => {
+    const technician = await createUser({ tenantId, role: Role.TECHNICIAN });
+
+    const first = await asUser(app, technician).patch('/users/me/tours', {
+      tourId: 'dashboard',
+    });
+    expect(first.status).toBe(200);
+    expect(first.body).toEqual({ completedTours: ['dashboard'] });
+
+    const again = await asUser(app, technician).patch('/users/me/tours', {
+      tourId: 'dashboard',
+    });
+    expect(again.body).toEqual({ completedTours: ['dashboard'] });
+
+    const second = await asUser(app, technician).patch('/users/me/tours', {
+      tourId: 'orders-list',
+    });
+    expect(second.body).toEqual({ completedTours: ['dashboard', 'orders-list'] });
+
+    const invalid = await asUser(app, technician).patch('/users/me/tours', {
+      tourId: 'NOT VALID!',
+    });
+    expect(invalid.status).toBe(400);
+  });
+
   it('RN-11: listing only shows users of the requesting tenant', async () => {
     const otherTenant = await createTenant();
     const foreign = await createUser({ tenantId: otherTenant.id });
