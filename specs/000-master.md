@@ -16,7 +16,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 | 003 | Autenticação, sessão e RBAC | ✅ concluída (Fase 2) |
 | 004 | Regras de negócio (RN-01..RN-15) e máquina de estados | 🔶 parcial — Fases 3-4 ok; RN-14/15 (F7) |
 | 005 | API REST (contratos) | 🔶 parcial — Fases 3-4 ok; dashboard/mapa (F7) |
-| 006 | Frontend (rotas, telas, estados) | — |
+| 006 | Frontend (rotas, telas, estados) | 🔶 parcial — Fase 6 ok; dashboard/mapas (F7) |
 | 007 | Design system e identidade visual | ✅ concluída (Fase 5) |
 | 008 | Estratégia de testes | — |
 | 009 | Tour guiado (onboarding por tela) | — |
@@ -34,7 +34,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 - [x] **Fase 3 — Domínio OS:** customers, equipments, service orders, máquina de estados, eventos de auditoria. Testes de TODAS as RN de transição + isolamento de tenant. (Specs 004, 005) — PR #4
 - [x] **Fase 4 — Orçamentos:** quotes versionadas, itens, envio, fluxo público de aprovação por token, expiração. Testes. (Specs 004, 005) — PR #5
 - [x] **Fase 5 — Design system:** tokens, temas claro/escuro, fontes, componentes base documentados. (Spec 007) — PR #6
-- [ ] **Fase 6 — Telas core:** layout autenticado, login, lista/detalhe/wizard de OS, clientes, página pública `/q/[token]`. (Spec 006)
+- [x] **Fase 6 — Telas core:** layout autenticado, login, lista/detalhe/wizard de OS, clientes, página pública `/q/[token]`. (Spec 006) — PR #7
 - [ ] **Fase 7 — Dashboard, filiais e mapa:** métricas consolidadas/por filial, seletor de filial, mapa interno e mapa público compartilhável. (Specs 005, 006)
 - [ ] **Fase 8 — Tour guiado:** engine própria + fluxos de tour em todas as telas. (Spec 009)
 - [ ] **Fase 9 — E2E e hardening:** Playwright nos fluxos críticos, rate limit nas rotas públicas, headers de segurança, snapshots de tela. (Spec 008)
