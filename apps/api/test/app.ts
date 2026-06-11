@@ -11,6 +11,8 @@ export interface CreateTestAppOptions {
   throttle?: boolean;
   /** Extra controllers (test-only routes used to exercise guards). */
   controllers?: NonNullable<ModuleMetadata['controllers']>;
+  /** Provider overrides (e.g. the assistant model client mock). */
+  overrides?: { provide: unknown; useValue: unknown }[];
 }
 
 /** Boots the real AppModule against the disposable test database. */
@@ -21,10 +23,14 @@ export async function createTestApp(
   process.env.JWT_SECRET ??= 'integration-test-secret-with-32+-chars!!';
   process.env.THROTTLE_DISABLED = options.throttle === true ? 'false' : 'true';
 
-  const moduleRef = await Test.createTestingModule({
+  const builder = Test.createTestingModule({
     imports: [AppModule],
     controllers: options.controllers ?? [],
-  }).compile();
+  });
+  for (const override of options.overrides ?? []) {
+    builder.overrideProvider(override.provide).useValue(override.useValue);
+  }
+  const moduleRef = await builder.compile();
 
   const app = moduleRef.createNestApplication<INestApplication<App>>();
   // Same middleware as production (main.ts) — hardening tests assert it.

@@ -9,6 +9,7 @@ import { RolesGuard } from './common/guards/roles.guard';
 import { TenantContextInterceptor } from './common/interceptors/tenant-context.interceptor';
 import { loadEnv } from './infra/config/env';
 import { PrismaModule } from './infra/prisma/prisma.module';
+import { AssistantModule } from './modules/assistant/assistant.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { CustomersModule } from './modules/customers/customers.module';
@@ -34,6 +35,7 @@ import { UsersModule } from './modules/users/users.module';
     }),
     ScheduleModule.forRoot(), // daily quote-expiration sweep (RN-05)
     PrismaModule,
+    AssistantModule,
     AuthModule,
     BranchesModule,
     CustomersModule,
