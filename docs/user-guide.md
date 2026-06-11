@@ -231,7 +231,7 @@ O que cada cartão significa:
 *Legenda: o que o cliente vê — ideal para a bio do Instagram da loja.*
 
 - **Trocar o link** (se vazou onde não devia): a rotação é feita pelo
-  operador do sistema via script — veja [scripts.md](scripts.md#rotate-map-tokents--revoga-o-link-público-do-mapa).
+  operador do sistema via script — veja [scripts.md](scripts.md).
   O link antigo morre na hora.
 - Filial sem coordenadas cadastradas não aparece no mapa (a lista avisa).
 
