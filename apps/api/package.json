@@ -11,8 +11,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "db:generate": "DISABLE_ERD=true prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy",
+    "db:migrate": "DISABLE_ERD=true prisma migrate dev",
+    "db:deploy": "DISABLE_ERD=true prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:erd": "prisma generate"
   },
