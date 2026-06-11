@@ -22,7 +22,9 @@
     "db:seed": "tsx scripts/seed-demo.ts",
     "test:e2e": "playwright test --project=desktop --project=mobile",
     "shots": "playwright test --project=shots",
-    "test:coverage": "turbo run test -- --coverage"
+    "test:coverage": "turbo run test -- --coverage",
+    "assistant:context": "tsx scripts/build-assistant-context.ts",
+    "assistant:context:check": "tsx scripts/build-assistant-context.ts --check"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
