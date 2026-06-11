@@ -22,6 +22,7 @@ Mapa de toda a documentação do projeto. Comece pelo que você é:
 - **[Regras de negócio](business-rules.md)** — RN-01..RN-15 com a máquina de
   estados e a matriz de permissões.
 - **[Fluxos](flows.md)** — diagramas Mermaid dos três fluxos centrais.
+- **[Assistente Fia](assistant.md)** — arquitetura, system prompt, tools e limites.
 - **[Referência da API](api-reference.md)** — todos os endpoints com curl e
   respostas reais.
 - **[Banco de dados](database.md)** — ERD, dicionário de dados,
