@@ -17,7 +17,7 @@ Mapa de toda a documentação do projeto. Comece pelo que você é:
 
 - **[Specs](../specs/000-master.md)** — a fonte de verdade do que foi
   construído, fase a fase (comece pelo master).
-- **[ADRs](adr/)** — as decisões de arquitetura, numeradas (001–011), com
+- **[ADRs](adr/)** — as decisões de arquitetura, numeradas em ordem cronológica, com
   contexto e trade-offs.
 - **[Regras de negócio](business-rules.md)** — RN-01..RN-15 com a máquina de
   estados e a matriz de permissões.
