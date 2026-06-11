@@ -112,6 +112,9 @@ jobs:
         env:
           PUPPETEER_SKIP_DOWNLOAD: "true"
 
+      - name: Generate Prisma client
+        run: pnpm --filter @ofix/api db:generate
+
       - name: Build
         run: pnpm build
 
