@@ -68,12 +68,12 @@ describe('tour engine (spec 009)', () => {
     fireEvent.click(screen.getByText('abrir tour'));
 
     expect(screen.getByText('Passo A')).toBeTruthy();
-    expect(screen.getByText('1 de 3')).toBeTruthy();
+    expect(screen.getByText('1 de 2')).toBeTruthy();
 
-    // missing middle target is skipped silently -> jumps straight to B
+    // hidden middle target is filtered out of the snapshot -> straight to B
     fireEvent.click(screen.getByText('Próximo'));
     expect(screen.getByText('Passo B')).toBeTruthy();
-    expect(screen.getByText('3 de 3')).toBeTruthy();
+    expect(screen.getByText('2 de 2')).toBeTruthy();
     expect(screen.getByText('Concluir')).toBeTruthy();
 
     // and back over the hole too
@@ -115,7 +115,7 @@ describe('tour engine (spec 009)', () => {
     fireEvent.click(screen.getByText('abrir tour'));
 
     const live = document.querySelector('[aria-live="polite"]');
-    expect(live?.textContent).toContain('Passo 1 de 3');
+    expect(live?.textContent).toContain('Passo 1 de 2');
 
     const dialog = screen.getByRole('dialog');
     fireEvent.keyDown(dialog, { key: 'ArrowRight' });
@@ -144,7 +144,6 @@ describe('tour engine (spec 009)', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     renderTour();
     fireEvent.click(screen.getByText('abrir tour'));
-    fireEvent.click(screen.getByText('Próximo'));
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('alvo-inexistente'));
     warn.mockRestore();
   });

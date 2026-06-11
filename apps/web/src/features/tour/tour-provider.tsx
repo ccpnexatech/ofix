@@ -119,10 +119,21 @@ export function TourProvider({ children }: { children: ReactNode }) {
 
   const start = useCallback(
     (tour: TourDefinition) => {
-      if (!activateStep(tour, 0, 1)) {
-        // No visible target at all: nothing to show.
+      // Snapshot only the steps whose target exists NOW: hidden targets
+      // (role-dependent buttons, future features) must not inflate the
+      // "X de Y" count nor turn the last visible step into a silent close.
+      const visibleSteps = tour.steps.filter((step) => {
+        const found = document.querySelector(step.target) !== null;
+        if (!found && process.env.NODE_ENV !== 'production') {
+          console.warn(`[tour:${tour.id}] alvo ausente, passo fora do tour: ${step.target}`);
+        }
+        return found;
+      });
+      if (visibleSteps.length === 0) {
         setActive(null);
+        return;
       }
+      activateStep({ ...tour, steps: visibleSteps }, 0, 1);
     },
     [activateStep],
   );
