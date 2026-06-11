@@ -15,10 +15,10 @@ export const ORDER_LIST_INCLUDE = {
 export const ORDER_DETAIL_INCLUDE = {
   ...ORDER_LIST_INCLUDE,
   customer: { select: { id: true, name: true, phone: true, email: true } },
-  // "Active quote": the latest version (spec 005); quote lifecycle in phase 4.
+  // All versions, newest first — the web shows the active quote plus the
+  // previous-versions accordion (spec 006).
   quotes: {
     orderBy: { version: 'desc' as const },
-    take: 1,
     include: { items: true },
   },
 } satisfies Prisma.ServiceOrderInclude;

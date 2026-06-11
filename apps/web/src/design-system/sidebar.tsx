@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 
 import { cn } from './cn';
 import { Logo } from './logo';
@@ -8,11 +8,19 @@ export interface SidebarItemProps {
   label: string;
   href: string;
   active?: boolean;
+  /** Pass next/link in the app for client-side navigation. */
+  linkComponent?: ElementType;
 }
 
-export function SidebarItem({ icon, label, href, active = false }: SidebarItemProps) {
+export function SidebarItem({
+  icon,
+  label,
+  href,
+  active = false,
+  linkComponent: LinkComponent = 'a',
+}: SidebarItemProps) {
   return (
-    <a
+    <LinkComponent
       href={href}
       aria-current={active ? 'page' : undefined}
       className={cn(
@@ -26,7 +34,7 @@ export function SidebarItem({ icon, label, href, active = false }: SidebarItemPr
         {icon}
       </span>
       {label}
-    </a>
+    </LinkComponent>
   );
 }
 

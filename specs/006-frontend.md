@@ -45,9 +45,9 @@ Linha de StatCards (OS abertas, atrasadas ⚠, receita do mês, ticket médio, t
 
 ## Definition of Done (Fases 6 e 7)
 
-- [ ] Todas as rotas implementadas com os 4 estados de UI.
-- [ ] Painel de transições 100% dirigido pela máquina de estados compartilhada (zero lógica de transição duplicada no front) — teste de componente provando botões por estado × papel.
-- [ ] Wizard de OS com validação por passo e criação inline de cliente/equipamento.
-- [ ] `/q/[token]` e `/m/[mapToken]` impecáveis em viewport 375px.
-- [ ] Seletor de filial persistido em URL e respeitando RN-12/RN-14.
-- [ ] Lighthouse das públicas: performance e acessibilidade ≥ 90.
+- [ ] Todas as rotas implementadas com os 4 estados de UI. — Fase 6: login/orders(lista/wizard/detalhe)/customers/users//q ✓; dashboard, /branches/map e /m (Fase 7)
+- [x] Painel de transições 100% dirigido pela máquina de estados compartilhada (zero lógica de transição duplicada no front) — teste de componente provando botões por estado × papel. — Fase 6: `transition-panel.spec.tsx` (15 combinações)
+- [x] Wizard de OS com validação por passo e criação inline de cliente/equipamento. — Fase 6
+- [ ] `/q/[token]` e `/m/[mapToken]` impecáveis em viewport 375px. — Fase 6: /q ✓ (screenshot real); /m na Fase 7
+- [ ] Seletor de filial persistido em URL e respeitando RN-12/RN-14. — Fase 6: ?branchId= na lista de OS com trava RN-12 ✓; seletor global + RN-14 na Fase 7
+- [ ] Lighthouse das públicas: performance e acessibilidade ≥ 90. — Fase 6: /q = 97/96 (build de produção); /m na Fase 7

@@ -8,6 +8,7 @@ import {
   QuoteStatus,
   Role,
   canReopenWarranty,
+  canRoleExecuteAction,
   canTransition,
   type TransitionBody,
   type TransitionContext,
@@ -25,14 +26,6 @@ import { QuoteExpirationService } from './quote-expiration.service';
 
 export const QUOTE_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // RN-03: 7 days
 
-/** Actions a technician may execute, restricted to orders assigned to them. */
-const TECHNICIAN_ACTIONS: ReadonlySet<OrderAction> = new Set([
-  OrderAction.START_DIAGNOSIS,
-  OrderAction.SEND_QUOTE,
-  OrderAction.START_REPAIR,
-  OrderAction.MARK_READY,
-]);
-
 /** Who is performing the transition — staff (USER) or the customer via public token. */
 export interface TransitionActor {
   type: ActorType;
@@ -41,27 +34,22 @@ export interface TransitionActor {
   method?: 'in_person' | 'public_token';
 }
 
-/** Permission matrix for transitions (spec 004), tested tabularly. */
+/** Permission matrix (spec 004) — the SAME shared rule the web uses for buttons. */
 function assertActionPermitted(
   user: AuthenticatedUser,
   action: OrderAction,
   assignedTechnicianId: string | null,
 ): void {
-  if (user.role === Role.ADMIN) {
-    return;
-  }
-  if (user.role === Role.TECHNICIAN) {
-    if (!TECHNICIAN_ACTIONS.has(action)) {
-      throw new ForbiddenException('Ação não permitida para o papel TECHNICIAN');
-    }
-    if (assignedTechnicianId !== user.id) {
-      throw new ForbiddenException('Técnico só opera OS atribuídas a si');
-    }
-    return;
-  }
-  // ATTENDANT: only DELIVER goes through the transition endpoint.
-  if (action !== OrderAction.DELIVER) {
-    throw new ForbiddenException('Ação não permitida para o papel ATTENDANT');
+  const allowed = canRoleExecuteAction(
+    { role: user.role, isAssignedTechnician: assignedTechnicianId === user.id },
+    action,
+  );
+  if (!allowed) {
+    throw new ForbiddenException(
+      user.role === Role.TECHNICIAN && assignedTechnicianId !== user.id
+        ? 'Técnico só opera OS atribuídas a si'
+        : `Ação não permitida para o papel ${user.role}`,
+    );
   }
 }
 
