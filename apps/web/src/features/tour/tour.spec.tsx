@@ -124,6 +124,22 @@ describe('tour engine (spec 009)', () => {
     expect(screen.getByText('Passo A')).toBeTruthy();
   });
 
+  it('regression: hidden targets do not inflate the count nor turn the last visible step into a silent close', () => {
+    // Bug report: tour said "2 de 3" and "Próximo" closed it — the 3rd target
+    // did not exist for that role. Visible steps must drive count and labels.
+    renderTour();
+    fireEvent.click(screen.getByText('abrir tour'));
+
+    // Only 2 of the 3 targets exist: the count must say so.
+    expect(screen.getByText('1 de 2')).toBeTruthy();
+
+    fireEvent.click(screen.getByText('Próximo'));
+    expect(screen.getByText('2 de 2')).toBeTruthy();
+    // Last VISIBLE step must offer "Concluir", never a deceiving "Próximo".
+    expect(screen.queryByText('Próximo')).toBeNull();
+    expect(screen.getByText('Concluir')).toBeTruthy();
+  });
+
   it('warns in dev when a target is missing', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     renderTour();
