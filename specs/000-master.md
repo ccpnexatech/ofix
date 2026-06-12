@@ -20,8 +20,8 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 | 007 | Design system e identidade visual | ✅ concluída (Fase 5) |
 | 008 | Estratégia de testes | ✅ concluída (Fase 9) |
 | 009 | Tour guiado (onboarding por tela) | ✅ concluída (Fases 8-9) |
-| 010 | Assistente de IA (chat + insights do dashboard) | — |
-| 011 | Entrega: CI, deploy, seed, git e scripts expostos | 🔶 parcial — CI feito na Fase 0 |
+| 010 | Assistente de IA (chat + insights do dashboard) | ✅ concluída (Fase 11 + ADR-012) |
+| 011 | Entrega: CI, deploy, seed, git e scripts expostos | 🔶 quase — falta deploy + release (credenciais) |
 | 012 | Documentação de uso da ferramenta (última spec) | ✅ concluída (Fase 10) |
 
 ## Fases de execução
