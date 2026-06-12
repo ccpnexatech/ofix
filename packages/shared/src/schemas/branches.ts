@@ -20,23 +20,37 @@ export type ListBranchesResponse = z.infer<typeof listBranchesResponseSchema>;
 
 // POST/PATCH /branches (ADR-013): branch create/edit is ADMIN self-service.
 // The same schema validates the web form, so optional inputs arrive as ''.
+// Unions (instead of z.preprocess) keep z.input form-friendly for RHF.
 
-/** Forms send '' for empty optional fields; the API contract is null. */
-const emptyToNull = (value: unknown): unknown =>
-  typeof value === 'string' && value.trim() === '' ? null : value;
+/** Optional text: '' from form inputs normalizes to null. */
+const optionalTextSchema = (max: number) =>
+  z
+    .union([z.string(), z.null()])
+    .optional()
+    .transform((value) => {
+      const trimmed = typeof value === 'string' ? value.trim() : null;
+      return trimmed === null || trimmed === '' ? null : trimmed;
+    })
+    .pipe(z.string().max(max).nullable());
 
 /** Accepts number (API) or numeric string (form input); '' never becomes 0. */
 const coordinateSchema = (kind: 'latitude' | 'longitude') => {
   const limit = kind === 'latitude' ? 90 : 180;
-  return z.preprocess(
-    emptyToNull,
-    z.coerce
-      .number()
-      .min(-limit, `${kind} fora do intervalo ±${String(limit)}`)
-      .max(limit, `${kind} fora do intervalo ±${String(limit)}`)
-      .nullable()
-      .default(null),
-  );
+  return z
+    .union([z.string(), z.number(), z.null()])
+    .optional()
+    .transform((value) =>
+      value === undefined || value === null || (typeof value === 'string' && value.trim() === '')
+        ? null
+        : Number(value),
+    )
+    .pipe(
+      z
+        .number(`${kind} deve ser um número`)
+        .min(-limit, `${kind} fora do intervalo ±${String(limit)}`)
+        .max(limit, `${kind} fora do intervalo ±${String(limit)}`)
+        .nullable(),
+    );
 };
 
 export const createBranchBodySchema = z.object({
@@ -48,12 +62,14 @@ export const createBranchBodySchema = z.object({
     .trim()
     .toUpperCase()
     .regex(/^[A-Z]{2}$/, 'UF inválida (sigla de 2 letras, ex.: CE)'),
-  phone: z.preprocess(emptyToNull, z.string().trim().max(20).nullable().default(null)),
-  zipCode: z.preprocess(emptyToNull, z.string().trim().max(10).nullable().default(null)),
+  phone: optionalTextSchema(20),
+  zipCode: optionalTextSchema(10),
   latitude: coordinateSchema('latitude'),
   longitude: coordinateSchema('longitude'),
 });
 export type CreateBranchBody = z.infer<typeof createBranchBodySchema>;
+/** What the web form holds before validation (coordinates may be strings). */
+export type CreateBranchFormInput = z.input<typeof createBranchBodySchema>;
 
 export const updateBranchBodySchema = createBranchBodySchema
   .partial()
