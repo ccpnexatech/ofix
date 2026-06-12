@@ -1,6 +1,6 @@
 # ADR-007 — Gestão de tenant, filial e primeiro usuário via scripts operacionais (sem painel admin)
 
-- **Status:** aceita
+- **Status:** aceita — revisada parcialmente pelo [ADR-013](013-cadastro-de-filial-na-ui.md) (criar/editar filial migrou para a UI)
 - **Data:** 2026-06-10
 
 ## Contexto
