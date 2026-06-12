@@ -13,7 +13,14 @@
 
 ## Demo
 
-> 🔗 **Links de produção em breve** (deploy free tier — a primeira requisição pode levar ~50s pelo cold start do Render).
+| 🔗 | Link |
+|---|---|
+| **Aplicação** | https://ofix-web.vercel.app |
+| **Orçamento público** (aprove como se fosse o cliente, sem login) | https://ofix-web.vercel.app/q/66208c0b-d3d6-4e52-89b2-01fb6ce823c9 |
+| **Mapa público de filiais** | https://ofix-web.vercel.app/m/0962a728-29f2-4125-a0a3-78fb962ffcda |
+| API (health) | https://ofix-2g8f.onrender.com/api/v1/health |
+
+> ⏱️ Free tier: a primeira requisição pode levar **~50s** (cold start do Render). O link de orçamento vale 7 dias (RN-05 em ação) — rodar `pnpm db:seed` contra o banco renova a validade.
 
 | Usuário | Papel | Vê o quê |
 |---|---|---|

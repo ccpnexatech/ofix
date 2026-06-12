@@ -33,8 +33,8 @@ Ordem: logo + uma frase do que é → gif de 30s do fluxo principal → badges (
 ## Definition of Done (Fases 0-parcial e 12)
 
 - [x] CI verde com todos os estágios; badge no README. — pipeline completo desde a F9/F10; badge na F12
-- [ ] Deploy dos 3 serviços funcionando; fluxo público testado em produção pelo celular.
-- [ ] Seed demo completo; links públicos reais no README. — seed ✓ (19 OS, links impressos); links REAIS aguardam o deploy
+- [x] Deploy dos 3 serviços funcionando; fluxo público testado em produção pelo celular. — Vercel + Render + Neon; smoke com viewport 390px em /q e /m, login UI e Fia SSE em produção
+- [x] Seed demo completo; links públicos reais no README. — seed rodado no Neon; links reais no README
 - [x] README final com gif; `docs/setup.md` validado seguindo do zero em máquina limpa (ou container). — 2 gifs reais; o job E2E do CI roda install→migrate→seed→stack em container limpo a cada PR
-- [ ] `gh release create v1.0.0`.
+- [x] `gh release create v1.0.0`. — release com changelog do histórico
 - [x] Revisão final: rodar `/checar-dod` de TODAS as fases; zero TODO/FIXME no código; `docs/backlog.md` organizado. — 314 testes + 6 E2E; 12 specs auditadas

@@ -269,7 +269,14 @@ async function seedOrders(
       const laborCents = seed.quote.totalCents - seed.quote.partCents;
       const quote = await db.quote.upsert({
         where: { serviceOrderId_version: { serviceOrderId: order.id, version: 1 } },
-        update: { status: seed.quote.status, totalCents: seed.quote.totalCents },
+        update: {
+          status: seed.quote.status,
+          totalCents: seed.quote.totalCents,
+          // re-seeding renews the public link validity (RN-05: 7 days)
+          ...(seed.quote.status === QuoteStatus.SENT
+            ? { tokenExpiresAt: new Date(now + 7 * 24 * 3_600_000) }
+            : {}),
+        },
         create: {
           tenantId,
           serviceOrderId: order.id,

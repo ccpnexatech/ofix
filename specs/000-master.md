@@ -21,7 +21,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 | 008 | Estratégia de testes | ✅ concluída (Fase 9) |
 | 009 | Tour guiado (onboarding por tela) | ✅ concluída (Fases 8-9) |
 | 010 | Assistente de IA (chat + insights do dashboard) | ✅ concluída (Fase 11 + ADR-012) |
-| 011 | Entrega: CI, deploy, seed, git e scripts expostos | 🔶 quase — falta deploy + release (credenciais) |
+| 011 | Entrega: CI, deploy, seed, git e scripts expostos | ✅ concluída (Fases 0 e 12) |
 | 012 | Documentação de uso da ferramenta (última spec) | ✅ concluída (Fase 10) |
 
 ## Fases de execução
@@ -40,7 +40,7 @@ Plataforma multi-tenant de gestão de ordens de serviço (OS) para assistências
 - [x] **Fase 9 — E2E e hardening:** Playwright nos fluxos críticos, rate limit nas rotas públicas, headers de segurança, snapshots de tela. (Spec 008) — PR #11
 - [x] **Fase 10 — Documentação de uso:** guia completo do usuário com os snapshots gerados na Fase 9. (Spec 012) — PR #12
 - [x] **Fase 11 — Assistente de IA:** chat flutuante com contexto dos docs + tools, e card de insights no dashboard. (Spec 010) — PR #13
-- [ ] **Fase 12 — Entrega final:** deploy completo, seed demo rico, README com gif e credenciais, revisão geral. (Spec 011)
+- [x] **Fase 12 — Entrega final:** deploy completo, seed demo rico, README com gif e credenciais, revisão geral. (Spec 011) — PRs #15–#18, release v1.0.0
 
 ## Ritual de Definition of Done (vale para TODA fase)
 
