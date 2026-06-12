@@ -54,3 +54,11 @@ e web em domínios diferentes.
 
 **Cold start:** no plano free o Render hiberna após ~15 min ocioso; a
 primeira requisição pode levar ~50 s (aviso para avaliadores no README).
+
+**Instância de referência (este repositório):** web em
+`https://ofix-web.vercel.app`, API em `https://ofix-2g8f.onrender.com`,
+banco no Neon. Duas pegadinhas reais resolvidas aqui, registradas para o
+futuro: serviço Render criado manualmente precisa de `PORT=10000` e do health
+check em `/api/v1/health`; e o proxy do web é um route handler em runtime —
+rewrites do Next assam a env no build (ver comentário em
+`apps/web/src/app/api/v1/[...path]/route.ts`).
