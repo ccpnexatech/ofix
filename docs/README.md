@@ -11,7 +11,7 @@ Mapa de toda a documentação do projeto. Comece pelo que você é:
 
 - **[Scripts operacionais](scripts.md)** — criar tenant/filial/usuário,
   rotacionar o link do mapa, seed e reset (com saídas reais).
-- **Setup local** — `pnpm i`, `docker compose up -d`, `pnpm db:migrate`, `pnpm db:seed`, `pnpm dev` (README completo na raiz chega na Fase 12).
+- **[Setup local e deploy](setup.md)** — rodar em 5 comandos; Neon + Render + Vercel passo a passo.
 
 ## Para quem DESENVOLVE
 

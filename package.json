@@ -28,6 +28,9 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
+    "@types/pngjs": "^6.0.5",
+    "gifenc": "^1.0.3",
+    "pngjs": "^7.0.0",
     "prettier": "^3.5.3",
     "tsx": "^4.20.3",
     "turbo": "^2.5.4"

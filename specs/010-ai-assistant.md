@@ -41,4 +41,4 @@ Balão flutuante (canto inferior direito, todas as telas autenticadas) abre um p
 - [x] Card de insights com cache e os 3 estados de UI. — cache 15min testado; card com testes de componente
 - [x] Rate limit e janela de mensagens testados. — 429 antes do stream; janela de 10 verificada no fake
 - [x] ADR-011 escrito; `docs/assistant.md` documentando arquitetura, prompt e tools.
-- [ ] Demonstração no README (gif do chat respondendo com dado real do seed). — entra com o README na Fase 12 (gravação com chave real)
+- [x] Demonstração no README (gif do chat respondendo com dado real do seed). — `docs/assets/demo-fia.gif` (modo local, custo zero)
