@@ -1,8 +1,24 @@
-# Fia — arquitetura da assistente de IA
+# Fia — arquitetura da assistente
 
-Como a assistente da spec 010 funciona por dentro. Para o uso no dia a dia,
-veja o [guia do usuário](user-guide.md); para a decisão docs-no-prompt,
-[ADR-011](adr/011-docs-no-prompt-direto.md).
+Como a assistente funciona por dentro. Para o uso no dia a dia, veja o
+[guia do usuário](user-guide.md); decisões: [ADR-011](adr/011-docs-no-prompt-direto.md)
+(docs no prompt) e [ADR-012](adr/012-assistente-deterministica-local.md)
+(modo local determinístico por padrão).
+
+## Dois modos, um pipeline (`ASSISTANT_MODE`)
+
+| | `local` (padrão) | `anthropic` |
+|---|---|---|
+| Motor | `LocalAssistantModel` — determinístico | `AnthropicModelClient` — API da Anthropic |
+| Custo | **zero** | pay-per-use (exige `ANTHROPIC_API_KEY`) |
+| Como responde | intenção → tool real → template; dúvida de uso → busca por palavras-chave nos docs; senão → fallback com sugestões | LLM com docs no prompt + tools |
+| Alucinação | impossível por construção (só recorta docs e dados) | mitigada por prompt/tools |
+| Insights | regras sobre as mesmas métricas | LLM com JSON estrito |
+
+Tudo o mais — SSE, loop de tools, janela de 10 mensagens, rate limit, cache de
+insights, UI — é **idêntico** nos dois modos: os provedores vivem atrás do
+contrato `AssistantModelClient`, e trocar de um para o outro é uma variável de
+ambiente. (Ollama/self-hosted: backlog.)
 
 ## Visão geral
 

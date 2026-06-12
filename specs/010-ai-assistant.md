@@ -1,5 +1,10 @@
 # SPEC 010 — Assistente de IA (Chat + Insights do Dashboard)
 
+> **Revisão (ADR-012, 2026-06-11):** por decisão do Caio, o modo padrão é a
+> **Fia local determinística** (custo zero, sem chamadas externas) — mesma
+> arquitetura, tools e UI desta spec; o caminho Anthropic abaixo permanece
+> implementado e ativável com `ASSISTANT_MODE=anthropic` + chave.
+
 ## Visão
 
 Balão flutuante (canto inferior direito, todas as telas autenticadas) abre um painel de chat com a assistente **"Fia"** (assistente da oficina). Ela conhece a documentação do produto, responde dúvidas de uso e consulta dados reais do tenant via tools. No dashboard, um card "Análise da IA" gera feedback textual sobre as métricas exibidas. **Recurso padrão para todos os tenants.**

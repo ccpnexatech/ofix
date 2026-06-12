@@ -335,7 +335,7 @@ curl localhost:3001/api/v1/public/map/$MAP_TOKEN
 
 | Rota | Roles | Notas |
 |---|---|---|
-| `POST /assistant/chat` | todas | **SSE** (`data: {"type":"text"\|"tool"\|"done"\|"error"}`); janela de 10 mensagens; 10 req/min/usuário (429); sem `ANTHROPIC_API_KEY` → 503 amigável |
+| `POST /assistant/chat` | todas | **SSE** (`data: {"type":"text"\|"tool"\|"done"\|"error"}`); janela de 10 mensagens; 10 req/min/usuário (429); modo padrão local determinístico (ADR-012); `ASSISTANT_MODE=anthropic` sem chave → 503 amigável |
 | `POST /assistant/dashboard-insights` | todas | 3–5 insights em JSON estrito; cache 15 min por tenant+filtro; falha de parse → retry → 503 |
 
 ```bash
