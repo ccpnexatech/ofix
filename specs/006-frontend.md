@@ -15,6 +15,7 @@
   /orders/[id]                  ← TELA CENTRAL (detalhe abaixo)
   /customers · /customers/[id]  ← perfil + equipamentos + histórico de OS
   /branches/map                 ← mapa interno (todas as filiais) + botão "copiar link público"
+                                  ADMIN: criar/editar filial em dialog (ADR-013)
   /settings/users               ← ADMIN
 /q/[token]                      ← PÁGINA PÚBLICA de orçamento (vitrine, mobile-first)
 /m/[mapToken]                   ← PÁGINA PÚBLICA do mapa de filiais (compartilhável)

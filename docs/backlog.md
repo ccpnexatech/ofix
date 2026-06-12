@@ -18,6 +18,10 @@ entrada aqui, com origem e gatilho. Nada abaixo bloqueia o uso do produto.
 
 ## Produto
 
+- **Desativação de filial na UI** (origem: ADR-013): criar/editar filial é
+  self-service do ADMIN, mas desativar exige política para usuários com escopo
+  fixo (RN-12) e OS abertas da filial. Gatilho: primeiro tenant que fechar uma
+  unidade.
 - **Troca de senha self-service** (origem: FAQ do guia): hoje o admin redefine
   em Usuários. Exigiria fluxo de e-mail (provedor de envio ainda não existe no
   projeto).

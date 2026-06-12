@@ -160,6 +160,13 @@ export const branchesMapTour = defineTour({
       body: 'Copia um link público do mapa, sem login. Dá para revogar o link via script quando quiser.',
       placement: 'left',
     },
+    {
+      // Só admins veem o botão — para os demais o passo é pulado em silêncio.
+      target: '[data-tour="new-branch"]',
+      title: 'Abriu uma unidade nova?',
+      body: 'Cadastre a filial aqui mesmo. Com latitude e longitude ela entra no mapa na hora.',
+      placement: 'left',
+    },
   ],
 });
 
