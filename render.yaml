@@ -1,0 +1,26 @@
+# Render blueprint (spec 011): deploys the OFIX API on the free plan.
+# The database lives on Neon (free, persistent) — paste its URL below.
+# Web goes on Vercel (see docs/setup.md).
+services:
+  - type: web
+    name: ofix-api
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @ofix/api db:generate && pnpm --filter @ofix/shared build && pnpm --filter @ofix/api build
+    startCommand: pnpm --filter @ofix/api start:prod
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      - key: PUPPETEER_SKIP_DOWNLOAD
+        value: 'true'
+      - key: DISABLE_ERD
+        value: 'true'
+      - key: DATABASE_URL
+        sync: false # Neon connection string (postgresql://...?sslmode=require)
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false # https://<seu-projeto>.vercel.app
+      - key: ASSISTANT_MODE
+        value: local
