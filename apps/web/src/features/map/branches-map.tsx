@@ -5,6 +5,8 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 import 'leaflet/dist/leaflet.css';
 
+import { cn } from '../../design-system/cn';
+
 export interface MapBranch {
   name: string;
   address: string;
@@ -48,7 +50,9 @@ export default function BranchesMap({
     <MapContainer
       bounds={bounds.pad(0.35)}
       scrollWheelZoom={false}
-      className={className ?? 'h-96 w-full rounded-lg border border-border'}
+      // z-0 contains Leaflet's internal z-indexes (200–1000) in their own
+      // stacking context; without it the map paints over page overlays (tour).
+      className={cn('z-0', className ?? 'h-96 w-full rounded-lg border border-border')}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
