@@ -231,6 +231,9 @@ O que cada cartão significa:
 - Cada OS pertence a **uma** filial (o aparelho está fisicamente em algum
   lugar). Usuários podem ser da filial ou do tenant inteiro — quem é "da
   Aldeota" só vê e opera o que é da Aldeota.
+- **Abriu uma unidade nova?** O Administrador cadastra pelo botão
+  **Nova filial** (e edita pelo lápis em cada cartão). Preencha latitude e
+  longitude para a unidade entrar no mapa — sem elas, fica só na lista.
 - **Compartilhe o mapa**: o botão **Copiar link público** gera um endereço que
   qualquer cliente abre sem senha, com pins, telefone clicável e botão "como
   chegar".

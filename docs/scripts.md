@@ -47,6 +47,9 @@ tsx scripts/create-branch.ts --tenant tecnorte --name "Filial Aldeota" \
 
 Idempotente por (tenant, nome da filial). Sem coordenadas, alerta sobre o mapa.
 
+> Desde o ADR-013 o ADMIN do tenant também cadastra/edita filiais pela UI
+> (tela Filiais). O script continua útil para o operador (bulk/automação).
+
 ## `create-user.ts` — cria usuário (role + filial opcional)
 
 ```bash

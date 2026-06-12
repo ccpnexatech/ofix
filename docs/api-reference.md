@@ -53,8 +53,7 @@ rotacionado revoga todas as sessões do usuário** (sinal de roubo).
 
 ### GET /branches — todas as roles
 
-Filiais ativas do tenant (seletores e mapa interno). Escrita só via scripts
-(ADR-007).
+Filiais ativas do tenant (seletores e mapa interno).
 
 ```bash
 curl localhost:3001/api/v1/branches -H "Authorization: Bearer $TOKEN"
@@ -74,6 +73,39 @@ curl localhost:3001/api/v1/branches -H "Authorization: Bearer $TOKEN"
     "longitude": "-38.52667"
   }
 ]
+```
+
+### POST /branches — ADMIN
+
+Cria filial (ADR-013). Nome é único por tenant (409 se repetir). `phone`,
+`zipCode`, `latitude` e `longitude` são opcionais — sem coordenadas a filial
+não aparece no mapa público.
+
+```bash
+curl -X POST localhost:3001/api/v1/branches \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{
+    "name": "Filial Aldeota",
+    "address": "Av. Santos Dumont, 1500",
+    "city": "Fortaleza",
+    "state": "CE",
+    "latitude": -3.7327,
+    "longitude": -38.4967
+  }'
+```
+
+Resposta `201`: o mesmo formato de item do `GET /branches`.
+
+### PATCH /branches/:id — ADMIN
+
+Mesmos campos do POST, parciais. `latitude`/`longitude` aceitam `null` para
+tirar a filial do mapa. `404` se a filial for de outro tenant (RN-11); `409`
+ao renomear para um nome já usado.
+
+```bash
+curl -X PATCH localhost:3001/api/v1/branches/3a8980fd-0507-418a-91a7-886a6712f152 \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{ "phone": "(85) 99999-0000" }'
 ```
 
 ## Customers & Equipments
