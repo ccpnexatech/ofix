@@ -4,12 +4,13 @@ import { cn } from './cn';
 
 /**
  * Dense data table (spec 007): sticky header, tabular numbers (inherited from
- * the global `table` rule), row hover. Wrap in a fixed-height container to
- * activate the sticky header.
+ * the global `table` rule), row hover. Wrap in a max/fixed-height container to
+ * activate the sticky header — the inner scrollport adopts the wrapper's
+ * max-height via `max-h-[inherit]` (otherwise rows overflow past it).
  */
 export function Table({ className, ...props }: HTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="overflow-auto rounded-lg border border-border">
+    <div className="max-h-[inherit] overflow-auto rounded-lg border border-border">
       <table className={cn('w-full caption-bottom text-sm', className)} {...props} />
     </div>
   );
