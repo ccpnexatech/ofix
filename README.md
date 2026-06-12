@@ -41,19 +41,19 @@ O chat responde com **dados reais do tenant** (tools com escopo) e recortes da d
 
 ```mermaid
 flowchart LR
-    subgraph Cliente final — sem login
-        Q["/q/{token}\norçamento"] & M["/m/{token}\nmapa de filiais"]
+    subgraph cliente ["Cliente final — sem login"]
+        Q["/q/{token}<br/>orçamento"] & M["/m/{token}<br/>mapa de filiais"]
     end
-    subgraph web [apps/web — Next.js 15]
-        UI[App Router + React 19\nTanStack Query · RHF · Tailwind v4]
+    subgraph web ["apps/web — Next.js 15"]
+        UI["App Router + React 19<br/>TanStack Query · RHF · Tailwind v4"]
     end
-    subgraph api [apps/api — NestJS 11]
-        G[Guards JWT + RBAC\nTenantContext via ALS] --> S[Services + máquina de estados]
-        S --> P[(PostgreSQL 16\nPrisma 6 + extensão de tenant)]
-        S --> FIA[Fia: tools read-only\n+ docs no prompt]
+    subgraph api ["apps/api — NestJS 11"]
+        G["Guards JWT + RBAC<br/>TenantContext via ALS"] --> S["Services + máquina de estados"]
+        S --> P[("PostgreSQL 16<br/>Prisma 6 + extensão de tenant")]
+        S --> FIA["Fia: tools read-only<br/>+ docs no prompt"]
     end
     Q & M & UI -- "proxy same-origin /api/v1/*" --> G
-    SH[packages/shared\nZod 4 · máquina de estados] -.tipos e regras únicos.-> UI & S
+    SH["packages/shared<br/>Zod 4 · máquina de estados"] -. tipos e regras únicos .-> UI & S
 ```
 
 - **Isolamento multi-tenant estrutural**: toda query passa por uma [Prisma Client Extension](docs/adr/002-multi-tenant-por-coluna.md) que injeta o `tenantId` do `AsyncLocalStorage` — esquecer um filtro é impossível, e cada endpoint tem teste de isolamento.
@@ -122,6 +122,6 @@ Evoluções conscientemente adiadas estão em [docs/backlog.md](docs/backlog.md)
 
 ## Autor
 
-**Caio César Passos Viana Ponte** — [NEXATECH](https://www.linkedin.com/company/nexatech-solucoes) · ccpnexatech@gmail.com
+**[Caio César Passos Viana Ponte](https://www.linkedin.com/in/ccp-nexatech/)** — [CCP NEXATECH](https://www.linkedin.com/company/ccp-nexatech) · ccpnexatech@gmail.com
 
 Projeto de portfólio construído com specs como fonte de verdade, commits atômicos e PRs por fase — o [histórico](https://github.com/ccpnexatech/ofix/pulls?q=is%3Apr+is%3Amerged) conta a história.
