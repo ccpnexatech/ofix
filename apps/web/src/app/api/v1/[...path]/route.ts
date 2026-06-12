@@ -24,6 +24,12 @@ const HOP_BY_HOP = new Set([
   'upgrade',
   'host',
   'content-length',
+  // fetch() transparently decompresses the upstream body; forwarding the
+  // original content-encoding makes browsers try to decompress AGAIN
+  // (ERR_CONTENT_DECODING_FAILED). Same for the inbound accept-encoding:
+  // undici negotiates its own.
+  'content-encoding',
+  'accept-encoding',
 ]);
 
 async function proxy(
